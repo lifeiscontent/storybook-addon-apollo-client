@@ -2,6 +2,19 @@
 
 Use Apollo Client in your Storybook stories.
 
+## Install
+
+**yarn**
+```
+yarn add --dev storybook-addon-apollo-client
+```
+
+**npm**
+
+```
+npm install -D storybook-addon-apollo-client
+```
+
 ## As a decorator in a story
 
 ```jsx
