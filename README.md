@@ -62,3 +62,9 @@ addDecorator(
 if you setup `withApolloClient` in preview, it will not need to be added to the `decorators` key in each story, consider doing this if you have a lot of stories that depend on Apollo.
 
 Read more about the options available for MockedProvider at https://www.apollographql.com/docs/react/development-testing/testing
+
+## Example App
+
+To see real world usage of how to use this addon, check out the example app:
+
+https://github.com/lifeiscontent/realworld
