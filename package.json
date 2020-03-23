@@ -1,5 +1,9 @@
 {
-  "author": "Aaron Reisman",
+  "author": {
+    "name": "Aaron Reisman",
+    "email": "aaron@lifeiscontent.net",
+    "url": "https://lifeiscontent.net/"
+  },
   "devDependencies": {
     "@types/jest": "25.1.4",
     "apollo-cache-inmemory": "1.x",
