@@ -4,6 +4,10 @@
     "email": "aaron@lifeiscontent.net",
     "url": "https://lifeiscontent.net/"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lifeiscontent/storybook-addon-apollo-client.git"
+  },
   "devDependencies": {
     "@types/jest": "25.1.4",
     "apollo-cache-inmemory": "1.x",
