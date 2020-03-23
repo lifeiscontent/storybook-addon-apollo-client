@@ -9,6 +9,7 @@ import { withApolloClient } from 'storybook-addon-apollo-client';
 import MyComponentThatHasAQuery, {
   MyQuery,
 } from '../component-that-has-a-query';
+
 export default {
   title: 'My Story',
   decorators: [withApolloClient],
