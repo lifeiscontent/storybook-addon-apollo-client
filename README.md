@@ -2,6 +2,19 @@
 
 Use Apollo Client in your Storybook stories.
 
+## Install
+
+**yarn**
+```
+yarn add --dev storybook-addon-apollo-client
+```
+
+**npm**
+
+```
+npm install -D storybook-addon-apollo-client
+```
+
 ## As a decorator in a story
 
 ```jsx
@@ -9,6 +22,7 @@ import { withApolloClient } from 'storybook-addon-apollo-client';
 import MyComponentThatHasAQuery, {
   MyQuery,
 } from '../component-that-has-a-query';
+
 export default {
   title: 'My Story',
   decorators: [withApolloClient],
@@ -48,3 +62,9 @@ addDecorator(
 if you setup `withApolloClient` in preview, it will not need to be added to the `decorators` key in each story, consider doing this if you have a lot of stories that depend on Apollo.
 
 Read more about the options available for MockedProvider at https://www.apollographql.com/docs/react/development-testing/testing
+
+## Example App
+
+To see real world usage of how to use this addon, check out the example app:
+
+https://github.com/lifeiscontent/realworld
