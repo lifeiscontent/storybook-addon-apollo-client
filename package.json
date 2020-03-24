@@ -40,9 +40,7 @@
   "module": "dist/storybook-addon-apollo-client.esm.js",
   "name": "storybook-addon-apollo-client",
   "peerDependencies": {
-    "apollo-cache-inmemory": "1.x",
     "apollo-client": "2.x",
-    "graphql": "14.x",
     "react": "16.x"
   },
   "prettier": {
