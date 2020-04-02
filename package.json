@@ -9,6 +9,7 @@
     "url": "https://github.com/lifeiscontent/storybook-addon-apollo-client.git"
   },
   "devDependencies": {
+    "@apollo/react-testing": "3.x",
     "@types/jest": "25.1.4",
     "apollo-cache-inmemory": "1.x",
     "apollo-client": "2.x",
@@ -20,7 +21,6 @@
     "typescript": "3.8.3"
   },
   "dependencies": {
-    "@apollo/react-testing": "3.1.3",
     "@storybook/addons": "5.3.17"
   },
   "engines": {
@@ -40,6 +40,7 @@
   "module": "dist/storybook-addon-apollo-client.esm.js",
   "name": "storybook-addon-apollo-client",
   "peerDependencies": {
+    "@apollo/react-testing": "3.x",
     "apollo-client": "2.x",
     "react": "16.x"
   },
@@ -57,5 +58,5 @@
     "prepare": "tsdx build"
   },
   "typings": "dist/index.d.ts",
-  "version": "1.0.0"
+  "version": "1.0.1"
 }
