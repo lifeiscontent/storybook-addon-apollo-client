@@ -21,7 +21,7 @@
     "typescript": "3.8.3"
   },
   "dependencies": {
-    "@storybook/addons": "5.3.17"
+    "@storybook/addons": "6.x"
   },
   "engines": {
     "node": ">=10"
