@@ -1,6 +1,6 @@
 import React from 'react';
 import { makeDecorator } from '@storybook/addons';
-import { MockedProvider } from '@apollo/react-testing';
+import { MockedProvider } from '@apollo/client/testing';
 
 export const withApolloClient = makeDecorator({
   name: 'ApolloClient',
