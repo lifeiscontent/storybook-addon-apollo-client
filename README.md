@@ -63,6 +63,33 @@ if you setup `withApolloClient` in preview, it will not need to be added to the 
 
 Read more about the options available for MockedProvider at https://www.apollographql.com/docs/react/development-testing/testing
 
+## Usage with Addon UI
+
+An optional Addon allows you to visualize the mocked requests attached to each Story.
+
+Register the addon in `./storybook/addons.js`
+```
+import "storybook-addon-apollo-client";
+```
+
+Add the addon to your configuration in `./storybook/main.js`
+```
+module.exports = {
+  ...config,
+  addons: [
+    ...your addons
+    "storybook-addon-apollo-client",
+  ],
+};
+```
+
+In Storybook, click "Show Addons" and navigate to the "Apollo Client" tab.
+This is best viewed in vertical orientation using the "Change addons orientation" option.
+
+```
+TODO: Include a screenshot of the Addon UI
+```
+
 ## Example App
 
 To see real world usage of how to use this addon, check out the example app:

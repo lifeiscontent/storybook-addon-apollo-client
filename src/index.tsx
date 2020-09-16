@@ -3,6 +3,7 @@ import { makeDecorator } from '@storybook/addons';
 import { MockedProvider } from '@apollo/client/testing';
 
 import config from './config';
+import "./register";
 
 const { decoratorName, parameterName } = config;
 

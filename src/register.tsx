@@ -8,11 +8,11 @@ import config from './config';
 const { parameterName, title } = config;
 const PANEL_ID = `${parameterName}/panel`;
 
-addons.register(parameterName, api => {
+addons.register(parameterName, () => {
   addons.add(PANEL_ID, {
     title,
     type: types.PANEL,
-    render: ({ active, key }) => (
+    render: ({ active = false, key }) => (
       <AddonPanel active={active} key={key}>
         <ApolloClientPanel />
       </AddonPanel>
