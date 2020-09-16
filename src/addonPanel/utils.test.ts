@@ -1,13 +1,14 @@
-import {
-  parseRequestMetadata,
-  getMockedRequestData,
-  isMockGraphqlError,
-  formatMockedQuery,
-  ERROR_MOCK_DATA,
-} from './utils';
 import { DocumentNode } from 'graphql';
 import { gql } from '@apollo/client';
 import { MockedResponse } from '@apollo/client/testing';
+
+import {
+  ERROR_MOCK_DATA,
+  formatMockedQuery,
+  getMockedRequestData,
+  isMockGraphqlError,
+  parseRequestMetadata,
+} from './utils';
 
 const variables = {
   username: 'mock_username',
@@ -106,7 +107,7 @@ describe('Addon Panel Utils', () => {
         name: 'GetUser',
         query: QUERY_STRING,
         data: { user },
-        variables,
+        variables: { username: 'mock_username' },
       });
     });
 
@@ -123,7 +124,7 @@ describe('Addon Panel Utils', () => {
         name: 'GetUser',
         query: QUERY_STRING,
         data: ERROR_MOCK_DATA,
-        variables,
+        variables: { username: 'mock_username' },
       });
     });
 
@@ -143,7 +144,7 @@ describe('Addon Panel Utils', () => {
         name: 'GetUser',
         query: QUERY_STRING,
         data: { ...ERROR_MOCK_DATA, user },
-        variables,
+        variables: { username: 'mock_username' },
       });
     });
   });
