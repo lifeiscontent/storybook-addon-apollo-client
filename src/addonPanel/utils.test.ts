@@ -5,7 +5,7 @@ import { MockedResponse } from '@apollo/client/testing';
 import {
   ERROR_MOCK_DATA,
   formatMockedQuery,
-  getMockedRequestData,
+  getMockedResponseData,
   isMockGraphqlError,
   parseRequestMetadata,
 } from './utils';
@@ -59,15 +59,15 @@ describe('Addon Panel Utils', () => {
     });
   });
 
-  describe('Get mocked request data', () => {
+  describe('Get mocked response data', () => {
     it('Should parse static mock data', () => {
       const result = { data: { user } };
-      const data = getMockedRequestData(result);
+      const data = getMockedResponseData(result);
       expect(data).toEqual({ user });
     });
     it('Should parse mock data resolver functions', () => {
       const result = () => ({ data: { user } });
-      const data = getMockedRequestData(result);
+      const data = getMockedResponseData(result);
       expect(data).toEqual({ user });
     });
   });
