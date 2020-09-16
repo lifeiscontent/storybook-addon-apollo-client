@@ -33,7 +33,7 @@ const query: DocumentNode = gql`
 
 describe('Addon Panel Utils', () => {
   describe('Parse request metadata', () => {
-    it('', () => {
+    it('Should return the name, query string, and variables for a request', () => {
       const request = {
         query,
         variables,
@@ -43,6 +43,17 @@ describe('Addon Panel Utils', () => {
         name: 'GetUser',
         query: QUERY_STRING,
         variables: { username: 'mock_username' },
+      });
+    });
+    it('Should return a sensible default if variables are not required', () => {
+      const request = {
+        query,
+      };
+      const parsed = parseRequestMetadata(request);
+      expect(parsed).toEqual({
+        name: 'GetUser',
+        query: QUERY_STRING,
+        variables: {},
       });
     });
   });
