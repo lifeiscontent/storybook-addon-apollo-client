@@ -1,5 +1,5 @@
 import React from 'react';
-import { DocumentWrapper } from '@storybook/components';
+import { AddonPanel, DocumentWrapper } from '@storybook/components';
 import { useParameter } from '@storybook/api';
 
 import config from '../config';
@@ -31,12 +31,17 @@ const ApolloClientQueriesList = () => {
   return <QueriesList queries={mocks.map(formatMockedQuery)} />;
 };
 
-export const ApolloClientPanel = () => (
-  <DocumentWrapper>
-    <div style={{ padding: '1rem' }}>
-      <ErrorBoundary FallbackComponent={ErrorFallback}>
-        <ApolloClientQueriesList />
-      </ErrorBoundary>
-    </div>
-  </DocumentWrapper>
+type Props = {
+  active: boolean;
+};
+export const ApolloClientPanel: React.FC<Props> = ({ active }) => (
+  <AddonPanel active={active}>
+    <DocumentWrapper>
+      <div style={{ padding: '1rem' }}>
+        <ErrorBoundary FallbackComponent={ErrorFallback}>
+          <ApolloClientQueriesList />
+        </ErrorBoundary>
+      </div>
+    </DocumentWrapper>
+  </AddonPanel>
 );

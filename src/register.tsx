@@ -1,6 +1,5 @@
 import React from 'react';
 import { addons, types } from '@storybook/addons';
-import { AddonPanel } from '@storybook/components';
 
 import { ApolloClientPanel } from './addonPanel';
 import config from './config';
@@ -13,9 +12,7 @@ addons.register(parameterName, () => {
     title,
     type: types.PANEL,
     render: ({ active = false, key }) => (
-      <AddonPanel active={active} key={key}>
-        <ApolloClientPanel />
-      </AddonPanel>
+      <ApolloClientPanel active={active} key={key} />
     ),
   });
 });
