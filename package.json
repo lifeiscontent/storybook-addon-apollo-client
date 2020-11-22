@@ -10,7 +10,6 @@
   },
   "devDependencies": {
     "@apollo/client": "3.x",
-    "@rollup/plugin-multi-entry": "^4.0.0",
     "@types/jest": "25.1.4",
     "@types/react-syntax-highlighter": "^13.5.0",
     "@types/webpack-env": "^1.15.3",
@@ -32,8 +31,7 @@
     "node": ">=10"
   },
   "files": [
-    "dist",
-    "src"
+    "dist"
   ],
   "husky": {
     "hooks": {
@@ -42,17 +40,7 @@
   },
   "license": "MIT",
   "main": "dist/cjs/index.js",
-  "exports": {
-    ".": {
-      "import": "./dist/esm/index.js",
-      "require": "./dist/cjs/index.js"
-    },
-    "./register": {
-      "import": "./dist/esm/register.js",
-      "require": "./dist/cjs/register.js"
-    }
-  },
-  "type": "module",
+  "module": "dist/esm/index.js",
   "name": "storybook-addon-apollo-client",
   "peerDependencies": {
     "@apollo/client": "3.x",
@@ -73,6 +61,5 @@
     "lint": "tsdx lint src test",
     "prepare": "npm run build"
   },
-  "typings": "dist/index.d.ts",
   "version": "3.0.0"
 }
