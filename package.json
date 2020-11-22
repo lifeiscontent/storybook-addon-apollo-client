@@ -31,7 +31,8 @@
     "node": ">=10"
   },
   "files": [
-    "dist"
+    "dist",
+    "register.js"
   ],
   "husky": {
     "hooks": {
