@@ -12,10 +12,14 @@
     "@apollo/client": "3.x",
     "@rollup/plugin-multi-entry": "^4.0.0",
     "@types/jest": "25.1.4",
+    "@types/react-syntax-highlighter": "^13.5.0",
+    "@types/webpack-env": "^1.15.3",
     "graphql": "15.3.0",
     "husky": "4.2.3",
+    "npm-run-all": "^4.1.5",
     "react": "16.x",
     "react-dom": "16.13.1",
+    "rimraf": "^3.0.2",
     "tsdx": "0.13.0",
     "tslib": "1.11.1",
     "typescript": "3.8.3"
@@ -37,8 +41,18 @@
     }
   },
   "license": "MIT",
-  "main": "dist/index.js",
-  "module": "dist/storybook-addon-apollo-client.esm.js",
+  "main": "dist/cjs/index.js",
+  "exports": {
+    ".": {
+      "import": "./dist/esm/index.js",
+      "require": "./dist/cjs/index.js"
+    },
+    "./register": {
+      "import": "./dist/esm/register.js",
+      "require": "./dist/cjs/register.js"
+    }
+  },
+  "type": "module",
   "name": "storybook-addon-apollo-client",
   "peerDependencies": {
     "@apollo/client": "3.x",
@@ -51,11 +65,13 @@
     "trailingComma": "es5"
   },
   "scripts": {
-    "start": "tsdx watch",
-    "build": "tsdx build",
+    "start": "npm run build:esm -- --watch",
+    "build": "rimraf dist && run-p build:*",
+    "build:esm": "tsc -p tsconfig.build.json --outDir dist/esm",
+    "build:cjs": "tsc -p tsconfig.build.json --module commonjs --target es5 --outDir dist/cjs",
     "test": "tsdx test",
-    "lint": "tsdx lint",
-    "prepare": "tsdx build"
+    "lint": "tsdx lint src test",
+    "prepare": "npm run build"
   },
   "typings": "dist/index.d.ts",
   "version": "3.0.0"
