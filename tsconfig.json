@@ -1,5 +1,6 @@
 {
   "include": ["src", "types", "test"],
+  "exclude": ["dist", "node_modules"],
   "compilerOptions": {
     "module": "esnext",
     "lib": ["dom", "esnext"],
@@ -18,11 +19,9 @@
     "noUnusedParameters": true,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
+    "forceConsistentCasingInFileNames": true,
     "moduleResolution": "node",
     "baseUrl": "./",
-    "paths": {
-      "*": ["src/*", "node_modules/*"]
-    },
     "jsx": "react",
     "esModuleInterop": true
   }
