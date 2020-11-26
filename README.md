@@ -67,6 +67,21 @@ Read more about the options available for MockedProvider at https://www.apollogr
 
 An optional Addon allows you to visualize the mocked requests attached to each Story.
 
+### Dependencies
+In order to parse and display GraphQL queries in the addon UI, your application's Storybook instance will require the `graphql-tag` Babel plugin.
+```
+npm i --save-dev babel-plugin-graphql-tag
+```
+**.storybook/.babelrc**
+```
+{
+  "plugins": [
+    "graphql-tag"
+  ]
+}
+```
+
+### Installation
 Register the addon in `./storybook/addons.js`
 ```
 import "storybook-addon-apollo-client/register";
@@ -83,6 +98,7 @@ module.exports = {
 };
 ```
 
+### Usage
 In Storybook, click "Show Addons" and navigate to the "Apollo Client" tab.
 This is best viewed in vertical orientation using the "Change addons orientation" option.
 
