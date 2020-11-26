@@ -69,7 +69,7 @@ An optional Addon allows you to visualize the mocked requests attached to each S
 
 Register the addon in `./storybook/addons.js`
 ```
-import "storybook-addon-apollo-client";
+import "storybook-addon-apollo-client/register";
 ```
 
 Add the addon to your configuration in `./storybook/main.js`
@@ -86,9 +86,11 @@ module.exports = {
 In Storybook, click "Show Addons" and navigate to the "Apollo Client" tab.
 This is best viewed in vertical orientation using the "Change addons orientation" option.
 
-```
-TODO: Include a screenshot of the Addon UI
-```
+**Request**
+![Storybook Apollo Request UI](https://user-images.githubusercontent.com/428636/100296292-c9d97a80-2f59-11eb-980b-2950b3875c8e.png)
+
+**Response**
+![Storybook Apollo Response UI](https://user-images.githubusercontent.com/428636/93371320-29abfa80-f820-11ea-8966-a329bcdce34e.png)
 
 ## Example App
 
