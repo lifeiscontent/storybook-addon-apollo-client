@@ -1,1 +1,2 @@
-require('./dist/cjs/register');
+/* eslint-env node */
+require('./dist/register');

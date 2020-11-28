@@ -9,22 +9,29 @@
     "url": "https://github.com/lifeiscontent/storybook-addon-apollo-client.git"
   },
   "devDependencies": {
-    "@apollo/client": "3.x",
-    "@types/jest": "25.1.4",
-    "@types/react-syntax-highlighter": "^13.5.0",
-    "@types/webpack-env": "^1.15.3",
-    "graphql": "15.3.0",
-    "husky": "4.2.3",
+    "@apollo/client": "3.2.9",
+    "@types/jest": "26.0.15",
+    "@types/webpack-env": "1.16.0",
+    "@typescript-eslint/eslint-plugin": "4.8.2",
+    "@typescript-eslint/parser": "4.8.2",
+    "eslint": "7.14.0",
+    "eslint-config-prettier": "6.15.0",
+    "eslint-plugin-jest": "24.1.3",
+    "eslint-plugin-react": "7.21.5",
+    "eslint-plugin-react-hooks": "4.2.0",
+    "graphql": "15.4.0",
+    "husky": "4.3.0",
+    "jest": "26.6.3",
     "npm-run-all": "^4.1.5",
-    "react": "16.x",
-    "react-dom": "16.13.1",
+    "prettier": "2.2.1",
+    "react": "17.0.1",
     "rimraf": "^3.0.2",
-    "tsdx": "0.13.0",
-    "tslib": "1.11.1",
-    "typescript": "3.8.3"
+    "tslib": "2.0.3",
+    "typescript": "4.1.2"
   },
   "dependencies": {
     "@storybook/addons": "6.x",
+    "@storybook/api": "6.x",
     "@storybook/components": "6.x"
   },
   "engines": {
@@ -36,31 +43,24 @@
   ],
   "husky": {
     "hooks": {
-      "pre-commit": "tsdx lint"
+      "pre-commit": "npm run lint"
     }
   },
   "license": "MIT",
-  "main": "dist/cjs/index.js",
-  "module": "dist/esm/index.js",
+  "main": "dist/index.js",
   "name": "storybook-addon-apollo-client",
   "peerDependencies": {
-    "@apollo/client": "3.x",
-    "react": "16.x"
-  },
-  "prettier": {
-    "printWidth": 80,
-    "semi": true,
-    "singleQuote": true,
-    "trailingComma": "es5"
+    "graphql": "*",
+    "react": "16.x || 17.x"
   },
   "scripts": {
-    "start": "npm run build:esm -- --watch",
-    "build": "rimraf dist && run-p build:*",
-    "build:esm": "tsc -p tsconfig.build.json --outDir dist/esm",
-    "build:cjs": "tsc -p tsconfig.build.json --module commonjs --target es5 --outDir dist/cjs",
-    "test": "tsdx test",
-    "lint": "tsdx lint src test",
-    "prepare": "npm run build"
+    "start": "yarn build --watch",
+    "clean": "rimraf dist",
+    "prebuild": "yarn clean",
+    "build": "tsc --build",
+    "test": "jest",
+    "lint": "eslint .",
+    "prepare": "yarn build"
   },
   "version": "3.0.0"
 }

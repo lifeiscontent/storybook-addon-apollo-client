@@ -15,7 +15,34 @@ yarn add --dev storybook-addon-apollo-client
 npm install -D storybook-addon-apollo-client
 ```
 
-## As a decorator in a story
+Add the addon to your configuration in `.storybook/main.js`
+```
+module.exports = {
+  ...config,
+  addons: [
+    ...your addons
+    "storybook-addon-apollo-client",
+  ],
+};
+```
+
+
+add the following to your `.storybook/preview.js`
+
+```js
+import { MockedProvider } from '@apollo/client/testing'; // Use for Apollo Version 3+
+// import { MockedProvider } from "@apollo/react-testing"; // Use for Apollo Version < 3
+
+
+export const parameters = {
+  apolloClient: {
+    Provider: MockedProvider,
+    // any props you want to pass to MockedProvider on every story
+  },
+};
+```
+
+## Using with a story with a query
 
 ```jsx
 import { withApolloClient } from 'storybook-addon-apollo-client';
@@ -25,7 +52,6 @@ import MyComponentThatHasAQuery, {
 
 export default {
   title: 'My Story',
-  decorators: [withApolloClient],
 };
 
 export const example = () => <MyComponentThatHasAQuery />;
@@ -41,72 +67,13 @@ example.story = {
 };
 ```
 
-## Usage in `preview.js`
-
-```js
-import { withApolloClient } from 'storybook-addon-apollo-client';
-import { addDecorator } from '@storybook/react';
-import { InMemoryCache } from 'apollo-cache-inmemory';
-
-const cache = new InMemoryCache();
-
-addDecorator(
-  withApolloClient({
-    cache,
-    ...// take a look at all the options in https://www.apollographql.com/docs/react/development-testing/testing
-    // everything that is used in `storybook-addon-apollo-client` is a 1 to 1 mapping of MockedProvider
-  })
-);
-```
-
-if you setup `withApolloClient` in preview, it will not need to be added to the `decorators` key in each story, consider doing this if you have a lot of stories that depend on Apollo.
-
 Read more about the options available for MockedProvider at https://www.apollographql.com/docs/react/development-testing/testing
-
-## Usage with Addon UI
-
-An optional Addon allows you to visualize the mocked requests attached to each Story.
-
-### Dependencies
-In order to parse and display GraphQL queries in the addon UI, your application's Storybook instance will require the `graphql-tag` Babel plugin.
-```
-npm i --save-dev babel-plugin-graphql-tag
-```
-**.storybook/.babelrc**
-```
-{
-  "plugins": [
-    "graphql-tag"
-  ]
-}
-```
-
-### Installation
-Register the addon in `./storybook/addons.js`
-```
-import "storybook-addon-apollo-client/register";
-```
-
-Add the addon to your configuration in `./storybook/main.js`
-```
-module.exports = {
-  ...config,
-  addons: [
-    ...your addons
-    "storybook-addon-apollo-client",
-  ],
-};
-```
 
 ### Usage
 In Storybook, click "Show Addons" and navigate to the "Apollo Client" tab.
-This is best viewed in vertical orientation using the "Change addons orientation" option.
 
-**Request**
-![Storybook Apollo Request UI](https://user-images.githubusercontent.com/428636/100296292-c9d97a80-2f59-11eb-980b-2950b3875c8e.png)
-
-**Response**
-![Storybook Apollo Response UI](https://user-images.githubusercontent.com/428636/93371320-29abfa80-f820-11ea-8966-a329bcdce34e.png)
+**Addon UI Preview**
+![Addon UI Preview](https://raw.githubusercontent.com/lifeiscontent/storybook-addon-apollo-client/preview.png)
 
 ## Example App
 
