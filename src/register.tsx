@@ -1,18 +1,21 @@
 import React from 'react';
-import { addons, types } from '@storybook/addons';
+import { addons, RenderOptions, types } from '@storybook/addons';
+import { AddonPanel } from '@storybook/components';
+import { ApolloClientPanel } from './panel';
+import { ADDON_ID, PARAM_KEY } from './constants';
+import { getTitle } from './title';
 
-import { ApolloClientPanel } from './addonPanel';
-import config from './config';
-
-const { parameterName, title } = config;
-const PANEL_ID = `${parameterName}/panel`;
-
-addons.register(parameterName, () => {
-  addons.add(PANEL_ID, {
-    title,
+addons.register(ADDON_ID, (api) => {
+  addons.add(ADDON_ID, {
+    paramKey: PARAM_KEY,
+    render({ active = false, key }: RenderOptions) {
+      return (
+        <AddonPanel key={key} active={active}>
+          {!active || !api.getCurrentStoryData() ? null : <ApolloClientPanel />}
+        </AddonPanel>
+      );
+    },
+    title: getTitle,
     type: types.PANEL,
-    render: ({ active = false, key }) => (
-      <ApolloClientPanel active={active} key={key} />
-    ),
   });
 });

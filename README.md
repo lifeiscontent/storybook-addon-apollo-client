@@ -15,79 +15,19 @@ yarn add --dev storybook-addon-apollo-client
 npm install -D storybook-addon-apollo-client
 ```
 
-## As a decorator in a story
+**babel**
 
-```jsx
-import { withApolloClient } from 'storybook-addon-apollo-client';
-import MyComponentThatHasAQuery, {
-  MyQuery,
-} from '../component-that-has-a-query';
+You must have `babel-plugin-graphql-tag` installed due to this issue: https://github.com/graphql/graphql-js/pull/2864
 
-export default {
-  title: 'My Story',
-  decorators: [withApolloClient],
-};
+if you don't use babel, you can create a `.storybook/.babelrc` like so:
 
-export const example = () => <MyComponentThatHasAQuery />;
-
-example.story = {
-  parameters: {
-    apolloClient: {
-      mocks: [
-        { request: { query: MyQuery }, result: { data: { viewer: null } } },
-      ],
-    },
-  },
-};
-```
-
-## Usage in `preview.js`
-
-```js
-import { withApolloClient } from 'storybook-addon-apollo-client';
-import { addDecorator } from '@storybook/react';
-import { InMemoryCache } from 'apollo-cache-inmemory';
-
-const cache = new InMemoryCache();
-
-addDecorator(
-  withApolloClient({
-    cache,
-    ...// take a look at all the options in https://www.apollographql.com/docs/react/development-testing/testing
-    // everything that is used in `storybook-addon-apollo-client` is a 1 to 1 mapping of MockedProvider
-  })
-);
-```
-
-if you setup `withApolloClient` in preview, it will not need to be added to the `decorators` key in each story, consider doing this if you have a lot of stories that depend on Apollo.
-
-Read more about the options available for MockedProvider at https://www.apollographql.com/docs/react/development-testing/testing
-
-## Usage with Addon UI
-
-An optional Addon allows you to visualize the mocked requests attached to each Story.
-
-### Dependencies
-In order to parse and display GraphQL queries in the addon UI, your application's Storybook instance will require the `graphql-tag` Babel plugin.
-```
-npm i --save-dev babel-plugin-graphql-tag
-```
-**.storybook/.babelrc**
-```
+```json
 {
-  "plugins": [
-    "graphql-tag"
-  ]
+  "plugins": ["graphql-tag"]
 }
 ```
 
-### Installation
-Register the addon in `./storybook/addons.js`
-```
-import "storybook-addon-apollo-client/register";
-```
-
-Add the addon to your configuration in `./storybook/main.js`
+Add the addon to your configuration in `.storybook/main.js`
 ```
 module.exports = {
   ...config,
@@ -98,15 +38,58 @@ module.exports = {
 };
 ```
 
+
+add the following to your `.storybook/preview.js`
+
+```js
+import { MockedProvider } from '@apollo/client/testing'; // Use for Apollo Version 3+
+// import { MockedProvider } from "@apollo/react-testing"; // Use for Apollo Version < 3
+
+
+export const parameters = {
+  apolloClient: {
+    MockedProvider,
+    // any props you want to pass to MockedProvider on every story
+  },
+};
+```
+
+## Upgrading from a previous version
+
+In previous versions, we had a decorator called `withApolloClient` this is no longer nesscessary. If you're upgrading from this API here are the following changes that you'll need to make:
+
+1. remove all code referencing the deprecated withApolloClient decorator.
+2. follow install instructions
+
+## Writing your stories with queries
+
+```jsx
+import MyComponentThatHasAQuery, {
+  MyQuery,
+} from '../component-that-has-a-query';
+
+export default {
+  title: 'My Story',
+};
+
+export const example = () => <MyComponentThatHasAQuery />;
+
+example.parameters = {
+  apolloClient: {
+    // do not put MockedProvider here, you can, but its preferred to do it in preview.js
+    mocks: [
+      { request: { query: MyQuery }, result: { data: { viewer: null } } },
+    ],
+  },
+};
+```
+
+Read more about the options available for MockedProvider at https://www.apollographql.com/docs/react/development-testing/testing
+
 ### Usage
 In Storybook, click "Show Addons" and navigate to the "Apollo Client" tab.
-This is best viewed in vertical orientation using the "Change addons orientation" option.
 
-**Request**
-![Storybook Apollo Request UI](https://user-images.githubusercontent.com/428636/100296292-c9d97a80-2f59-11eb-980b-2950b3875c8e.png)
-
-**Response**
-![Storybook Apollo Response UI](https://user-images.githubusercontent.com/428636/93371320-29abfa80-f820-11ea-8966-a329bcdce34e.png)
+![Addon UI Preview](preview.png)
 
 ## Example App
 
