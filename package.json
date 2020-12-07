@@ -39,7 +39,8 @@
   },
   "files": [
     "dist",
-    "register.js"
+    "register.js",
+    "preset.js"
   ],
   "husky": {
     "hooks": {
