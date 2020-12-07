@@ -1,15 +1,9 @@
-import React from 'react';
-import { makeDecorator } from '@storybook/addons';
-import { MockedProvider } from '@apollo/client/testing';
+if (module && module.hot && module.hot.decline) {
+  module.hot.decline();
+}
 
-export const withApolloClient = makeDecorator({
-  name: 'ApolloClient',
-  parameterName: 'apolloClient',
-  wrapper(getStory, context, settings) {
-    return (
-      <MockedProvider {...settings.options} {...settings.parameters}>
-        {getStory(context)}
-      </MockedProvider>
-    );
-  },
-});
+export const withApolloClient = () => (): JSX.Element => {
+  throw new Error(
+    'Please look at the new configuration for storybook-addon-apollo-client: https://github.com/lifeiscontent/storybook-addon-apollo-client'
+  );
+}
