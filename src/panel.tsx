@@ -28,30 +28,26 @@ const getOperationName = (mockedResponse: MockedResponse): string => {
 };
 
 export const ApolloClientPanel: React.FC = () => {
-  const [mockedResponse, setMockedResponse] = useState<MockedResponse | null>(
-    null
-  );
   const { mocks = [] } = useParameter<Parameters>(PARAM_KEY, {});
+  const [activeMockIndex, setActiveMockIndex] = useState<number>(() => mocks.length ? 0 : -1);
 
   if (mocks.length === 0) {
     return <Placeholder>No mocks for this story</Placeholder>;
   }
 
+  const mockedResponse = mocks[activeMockIndex];
+
+
   return (
-    <Fragment>
+    <Fragment key={activeMockIndex}>
       <Form.Field label="Mocks">
         <Form.Select
-          defaultValue="-1"
-          onChange={(event) => {
-            setMockedResponse(
-              event.currentTarget.value !== '-1'
-                ? mocks[Number(event.currentTarget.value)]
-                : null
-            );
-          }}
+          value={activeMockIndex}
+          onChange={(event) =>
+            setActiveMockIndex(Number(event.currentTarget.value))
+          }
           size="auto"
         >
-          <option value="-1">Select Mock</option>
           {mocks.map((mock, index) => (
             <option key={index} value={index}>
               {index + 1}. {getOperationName(mock)}
@@ -59,55 +55,55 @@ export const ApolloClientPanel: React.FC = () => {
           ))}
         </Form.Select>
       </Form.Field>
-        {mockedResponse && (
-          <TabsState initial="request">
-            <div key="request" id="request" title="Request">
-              {mockedResponse.request.query.loc?.source?.body ? (
-                <SyntaxHighlighter language="graphql" copyable bordered padded>
-                  {`${mockedResponse.request.query.loc.source.body}`}
-                </SyntaxHighlighter>
-              ) : (
-                <Placeholder>Could not parse query</Placeholder>
-              )}
-            </div>
-            <div key="variables" id="variables" title="Variables">
-              <SyntaxHighlighter language="json" copyable bordered padded>
-                {JSON.stringify(mockedResponse.request.variables, null, 2)}
+      {mockedResponse && (
+        <TabsState initial="request">
+          <div key="request" id="request" title="Request">
+            {mockedResponse.request.query.loc?.source?.body ? (
+              <SyntaxHighlighter language="graphql" copyable bordered padded>
+                {`${mockedResponse.request.query.loc.source.body}`}
               </SyntaxHighlighter>
-            </div>
-            <div key="context" id="context" title="Context">
-              {mockedResponse.request.context ? (
-                <SyntaxHighlighter language="json" copyable bordered padded>
-                  {JSON.stringify(mockedResponse.request.context, null, 2)}
-                </SyntaxHighlighter>
-              ) : (
-                <Placeholder>No context in request</Placeholder>
-              )}
-            </div>
-            <div key="result" id="result" title="Result">
-              {mockedResponse.result ? (
-                <SyntaxHighlighter language="json" copyable bordered padded>
-                  {JSON.stringify(mockedResponse.result, null, 2)}
-                </SyntaxHighlighter>
-              ) : (
-                <Placeholder>No result in mockedResponse</Placeholder>
-              )}
-            </div>
-            <div key="error" id="error" title="Error">
-              {mockedResponse.error ? (
-                <SyntaxHighlighter language="json" copyable bordered padded>
-                  {JSON.stringify(
-                    mockedResponse.error,
-                    Object.getOwnPropertyNames(mockedResponse.error),
-                    2
-                  )}
-                </SyntaxHighlighter>
-              ) : (
-                <Placeholder>No error in mockedResponse</Placeholder>
-              )}
-            </div>
-          </TabsState>
-        )}
+            ) : (
+              <Placeholder>Could not parse query</Placeholder>
+            )}
+          </div>
+          <div key="variables" id="variables" title="Variables">
+            <SyntaxHighlighter language="json" copyable bordered padded>
+              {JSON.stringify(mockedResponse.request.variables, null, 2)}
+            </SyntaxHighlighter>
+          </div>
+          <div key="context" id="context" title="Context">
+            {mockedResponse.request.context ? (
+              <SyntaxHighlighter language="json" copyable bordered padded>
+                {JSON.stringify(mockedResponse.request.context, null, 2)}
+              </SyntaxHighlighter>
+            ) : (
+              <Placeholder>No context in request</Placeholder>
+            )}
+          </div>
+          <div key="result" id="result" title="Result">
+            {mockedResponse.result ? (
+              <SyntaxHighlighter language="json" copyable bordered padded>
+                {JSON.stringify(mockedResponse.result, null, 2)}
+              </SyntaxHighlighter>
+            ) : (
+              <Placeholder>No result in mockedResponse</Placeholder>
+            )}
+          </div>
+          <div key="error" id="error" title="Error">
+            {mockedResponse.error ? (
+              <SyntaxHighlighter language="json" copyable bordered padded>
+                {JSON.stringify(
+                  mockedResponse.error,
+                  Object.getOwnPropertyNames(mockedResponse.error),
+                  2
+                )}
+              </SyntaxHighlighter>
+            ) : (
+              <Placeholder>No error in mockedResponse</Placeholder>
+            )}
+          </div>
+        </TabsState>
+      )}
     </Fragment>
   );
 };

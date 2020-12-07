@@ -1,9 +1,9 @@
-import React from 'react';
-import { StoryFn, StoryContext } from '@storybook/addons';
+import React, { FC } from 'react';
+import { StoryContext } from '@storybook/addons';
 import { PARAM_KEY } from './constants';
 
 export const withApolloClient = (
-  storyFn: StoryFn,
+  Story: FC<unknown>,
   context: StoryContext
 ): JSX.Element => {
   const { MockedProvider, ...providerProps } =
@@ -14,12 +14,12 @@ export const withApolloClient = (
       'storybook-addon-apollo-client: MockedProvider is missing from parameters in preview.js'
     );
 
-    return storyFn() as JSX.Element;
+    return <Story />;
   }
 
   return (
     <MockedProvider {...providerProps}>
-      {storyFn(context) as JSX.Element}
+      <Story />
     </MockedProvider>
   );
 };
