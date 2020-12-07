@@ -5,8 +5,7 @@ Use Apollo Client in your Storybook stories.
 ## Versions
 
 - If you're using Apollo Client 2.x and Storybook 5.x use version 1.x
-- If you're using Apollo Client 2.x and Storybook 6.x use version 2.x
-- If you're using Apollo Client 3.x and Storybook 6.x use version 3.x
+- If you're using Apollo Client 2.x or 3.x and Storybook 6.x use version 4.x
 
 ## Install
 
@@ -34,7 +33,8 @@ if you don't use babel, you can create a `.storybook/.babelrc` like so:
 ```
 
 Add the addon to your configuration in `.storybook/main.js`
-```
+
+```js
 module.exports = {
   ...config,
   addons: [
