@@ -33,7 +33,8 @@ if you don't use babel, you can create a `.storybook/.babelrc` like so:
 ```
 
 Add the addon to your configuration in `.storybook/main.js`
-```
+
+```js
 module.exports = {
   ...config,
   addons: [
