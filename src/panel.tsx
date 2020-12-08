@@ -8,7 +8,15 @@ import {
 } from '@storybook/components';
 import { PARAM_KEY } from './constants';
 import { MockedResponse, Parameters } from './types';
-import type { OperationDefinitionNode } from 'graphql';
+import { ASTNode, OperationDefinitionNode, print } from 'graphql';
+
+function safePrint(ast: ASTNode) {
+  try {
+    return print(ast);
+  } catch {
+    return ast.loc?.source?.body;
+  }
+}
 
 const getOperationName = (mockedResponse: MockedResponse): string => {
   if (mockedResponse.request.operationName) {
@@ -29,7 +37,9 @@ const getOperationName = (mockedResponse: MockedResponse): string => {
 
 export const ApolloClientPanel: React.FC = () => {
   const { mocks = [] } = useParameter<Parameters>(PARAM_KEY, {});
-  const [activeMockIndex, setActiveMockIndex] = useState<number>(() => mocks.length ? 0 : -1);
+  const [activeMockIndex, setActiveMockIndex] = useState<number>(() =>
+    mocks.length ? 0 : -1
+  );
 
   if (mocks.length === 0) {
     return <Placeholder>No mocks for this story</Placeholder>;
@@ -37,6 +47,7 @@ export const ApolloClientPanel: React.FC = () => {
 
   const mockedResponse = mocks[activeMockIndex];
 
+  const query = safePrint(mockedResponse.request.query);
 
   return (
     <Fragment key={activeMockIndex}>
@@ -58,9 +69,9 @@ export const ApolloClientPanel: React.FC = () => {
       {mockedResponse && (
         <TabsState initial="request">
           <div key="request" id="request" title="Request">
-            {mockedResponse.request.query.loc?.source?.body ? (
+            {query ? (
               <SyntaxHighlighter language="graphql" copyable bordered padded>
-                {`${mockedResponse.request.query.loc.source.body}`}
+                {query}
               </SyntaxHighlighter>
             ) : (
               <Placeholder>Could not parse query</Placeholder>
