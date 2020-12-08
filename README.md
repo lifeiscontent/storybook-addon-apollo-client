@@ -72,19 +72,28 @@ In previous versions, we had a decorator called `withApolloClient` this is no lo
 ```jsx
 import MyComponentThatHasAQuery, {
   MyQuery,
-} from '../component-that-has-a-query';
+} from "../component-that-has-a-query";
 
 export default {
-  title: 'My Story',
+  title: "My Story",
 };
 
-export const example = () => <MyComponentThatHasAQuery />;
+export const Example = () => <MyComponentThatHasAQuery />;
 
-example.parameters = {
+Example.parameters = {
   apolloClient: {
     // do not put MockedProvider here, you can, but its preferred to do it in preview.js
     mocks: [
-      { request: { query: MyQuery }, result: { data: { viewer: null } } },
+      {
+        request: {
+          query: MyQuery,
+        },
+        result: {
+          data: {
+            viewer: null,
+          },
+        },
+      },
     ],
   },
 };
