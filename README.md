@@ -24,7 +24,7 @@ npm install -D storybook-addon-apollo-client
 
 You must have `babel-plugin-graphql-tag` installed due to this issue: https://github.com/graphql/graphql-js/pull/2864
 
-if you don't use babel, you can create a `.storybook/.babelrc` like so:
+if you don't already have one you can create a `.storybook/.babelrc` like so:
 
 ```json
 {
