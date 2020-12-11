@@ -10,6 +10,7 @@ Use Apollo Client in your Storybook stories.
 ## Install
 
 **yarn**
+
 ```
 yarn add --dev storybook-addon-apollo-client
 ```
@@ -18,18 +19,6 @@ yarn add --dev storybook-addon-apollo-client
 
 ```
 npm install -D storybook-addon-apollo-client
-```
-
-**babel**
-
-You must have `babel-plugin-graphql-tag` installed due to this issue: https://github.com/graphql/graphql-js/pull/2864
-
-if you don't already have one you can create a `.storybook/.babelrc` like so:
-
-```json
-{
-  "plugins": ["graphql-tag"]
-}
 ```
 
 Add the addon to your configuration in `.storybook/main.js`
@@ -44,13 +33,11 @@ module.exports = {
 };
 ```
 
-
 add the following to your `.storybook/preview.js`
 
 ```js
 import { MockedProvider } from '@apollo/client/testing'; // Use for Apollo Version 3+
 // import { MockedProvider } from "@apollo/react-testing"; // Use for Apollo Version < 3
-
 
 export const parameters = {
   apolloClient: {
@@ -70,15 +57,13 @@ In previous versions, we had a decorator called `withApolloClient` this is no lo
 ## Writing your stories with queries
 
 ```jsx
-import MyComponentThatHasAQuery, {
-  MyQuery,
-} from "../component-that-has-a-query";
+import DashboardPage, { DashboardPageQuery } from '.';
 
 export default {
-  title: "My Story",
+  title: 'My Story',
 };
 
-export const Example = () => <MyComponentThatHasAQuery />;
+export const Example = () => <DashboardPage />;
 
 Example.parameters = {
   apolloClient: {
@@ -86,7 +71,7 @@ Example.parameters = {
     mocks: [
       {
         request: {
-          query: MyQuery,
+          query: DashboardPageQuery,
         },
         result: {
           data: {
@@ -102,6 +87,7 @@ Example.parameters = {
 Read more about the options available for MockedProvider at https://www.apollographql.com/docs/react/development-testing/testing
 
 ### Usage
+
 In Storybook, click "Show Addons" and navigate to the "Apollo Client" tab.
 
 ![Addon UI Preview](preview.png)
