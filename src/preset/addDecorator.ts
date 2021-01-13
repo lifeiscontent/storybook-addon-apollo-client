@@ -1,3 +1,3 @@
-import { withApolloClient } from '../decorators';
+import { WithApolloClient } from '../decorators';
 
-export const decorators = [withApolloClient];
+export const decorators = [WithApolloClient];

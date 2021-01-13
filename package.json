@@ -32,8 +32,7 @@
   "dependencies": {
     "@storybook/addons": "6.x",
     "@storybook/api": "6.x",
-    "@storybook/components": "6.x",
-    "babel-plugin-graphql-tag": "3.1.0"
+    "@storybook/components": "6.x"
   },
   "optionalDependencies": {
     "@apollo/client": "*",
