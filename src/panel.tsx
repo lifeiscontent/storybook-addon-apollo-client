@@ -1,21 +1,16 @@
 import React, { Fragment, useState } from 'react';
-import { useArgs, useParameter } from '@storybook/api';
+import { useGlobals, useParameter } from '@storybook/api';
 import {
   Form,
   Placeholder,
   SyntaxHighlighter,
   TabsState,
 } from '@storybook/components';
-import { PARAM_KEY } from './constants';
-import { Parameters } from './types';
+import { PARAM_KEY, ADDON_ID } from './constants';
+import { MockedResponse, Parameters } from './types';
 import { OperationDefinitionNode } from 'graphql';
 
-const getOperationName = (mockedResponse: {
-  request: {
-    operationName?: string;
-    query: { definitions: readonly { kind: string }[] };
-  };
-}): string => {
+const getOperationName = (mockedResponse: MockedResponse): string => {
   if (mockedResponse.request.operationName) {
     return mockedResponse.request.operationName;
   }
@@ -33,10 +28,11 @@ const getOperationName = (mockedResponse: {
 };
 
 export const ApolloClientPanel: React.FC = () => {
-  const [args = { __APOLLO_CLIENT__: [] }] = (useArgs() as unknown) as [
-    { __APOLLO_CLIENT__?: string[] }
-  ];
-  const { mocks = [] } = useParameter<Parameters>(PARAM_KEY, {});
+  const [globals] = useGlobals();
+
+  const queries = globals[`${ADDON_ID}/queries`] ?? [];
+
+  const { mocks = [] } = useParameter<Partial<Parameters>>(PARAM_KEY, {}) as Partial<Parameters>;
   const [activeMockIndex, setActiveMockIndex] = useState<number>(() =>
     mocks.length ? 0 : -1
   );
@@ -46,7 +42,7 @@ export const ApolloClientPanel: React.FC = () => {
   }
 
   const mockedResponse = mocks[activeMockIndex];
-  const query = args?.__APOLLO_CLIENT__?.[activeMockIndex];
+  const query = queries[activeMockIndex];
 
   return (
     <Fragment key={activeMockIndex}>

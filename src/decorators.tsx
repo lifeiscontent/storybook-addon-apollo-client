@@ -1,26 +1,21 @@
 import React, { FC } from 'react';
-import { StoryContext } from '@storybook/addons';
-import { PARAM_KEY } from './constants';
-import { useArgs, useEffect } from '@storybook/addons';
-import { ASTNode, print } from 'graphql';
+import { PARAM_KEY, ADDON_ID } from './constants';
+import { useGlobals, useEffect, useParameter } from '@storybook/addons';
+import { print } from 'graphql';
+import type { Parameters } from './types';
 
-export const WithApolloClient = (
-  Story: FC<unknown>,
-  context: StoryContext
-): JSX.Element => {
-  const { MockedProvider, ...providerProps } =
-    context.parameters[PARAM_KEY] ?? {};
+export const WithApolloClient = (Story: FC<unknown>): JSX.Element => {
+  const { MockedProvider, ...providerProps } = useParameter<
+    Partial<Parameters>
+  >(PARAM_KEY, {}) as Partial<Parameters>;
   const { mocks = [] } = providerProps ?? {};
+  const [, setGlobals] = useGlobals();
 
-  const [, updateArgs] = useArgs();
   useEffect(() => {
-    updateArgs({
-      __APOLLO_CLIENT__: mocks.map((mock: { request: { query: ASTNode } }) =>
-        print(mock.request.query)
-      ),
+    setGlobals({
+      [`${ADDON_ID}/queries`]: mocks.map((mock) => print(mock.request.query)),
     });
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [mocks, setGlobals]);
 
   if (!MockedProvider) {
     console.warn(
