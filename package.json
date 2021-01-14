@@ -67,5 +67,5 @@
     "lint": "eslint .",
     "prepare": "yarn build"
   },
-  "version": "4.0.5"
+  "version": "4.0.6"
 }
