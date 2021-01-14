@@ -15,7 +15,8 @@ export const WithApolloClient = (Story: FC<unknown>): JSX.Element => {
     setGlobals({
       [`${ADDON_ID}/queries`]: mocks.map((mock) => print(mock.request.query)),
     });
-  }, [mocks, setGlobals]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   if (!MockedProvider) {
     console.warn(
