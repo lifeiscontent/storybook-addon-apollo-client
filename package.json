@@ -67,5 +67,17 @@
     "lint": "eslint .",
     "prepare": "yarn build"
   },
-  "version": "4.0.6"
+  "version": "4.0.6",
+  "keywords": [
+    "storybook-addon",
+    "data-state",
+    "apollo",
+    "popular",
+    "graphql"
+  ],
+  "description": "Use Apollo Client in your Storybook stories.",
+  "storybook": {
+    "icon": "https://pbs.twimg.com/profile_images/1314271818027499522/0WAECoWU_400x400.png",
+    "displayName": "Apollo Client"
+  }
 }
