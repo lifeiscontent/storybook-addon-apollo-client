@@ -9,7 +9,7 @@
     "url": "https://github.com/lifeiscontent/storybook-addon-apollo-client.git"
   },
   "devDependencies": {
-    "@apollo/client": "^3.3.5",
+    "@apollo/client": ">=2.0.0 <4",
     "@apollo/react-testing": "4.0.0",
     "@types/jest": "26.0.19",
     "@types/webpack-env": "1.16.0",
