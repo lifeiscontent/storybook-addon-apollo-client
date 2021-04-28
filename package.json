@@ -9,8 +9,8 @@
     "url": "https://github.com/lifeiscontent/storybook-addon-apollo-client.git"
   },
   "devDependencies": {
-    "@apollo/client": ">=2.0.0 <4",
-    "@apollo/react-testing": "4.0.0",
+    "@apollo/client": ">=2.0.0",
+    "@apollo/react-testing": ">=3.0.0",
     "@types/jest": "26.0.19",
     "@types/webpack-env": "1.16.0",
     "@typescript-eslint/eslint-plugin": "4.9.1",
@@ -35,8 +35,8 @@
     "@storybook/components": "^6"
   },
   "optionalDependencies": {
-    "@apollo/client": "*",
-    "@apollo/react-testing": "*"
+    "@apollo/client": ">=2.0.0",
+    "@apollo/react-testing": ">=3.0.0"
   },
   "engines": {
     "node": ">=10"
