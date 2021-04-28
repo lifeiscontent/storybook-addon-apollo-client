@@ -46,11 +46,6 @@
     "register.js",
     "preset.js"
   ],
-  "husky": {
-    "hooks": {
-      "pre-commit": "npm run lint"
-    }
-  },
   "license": "MIT",
   "main": "dist/index.js",
   "name": "storybook-addon-apollo-client",
@@ -65,7 +60,7 @@
     "build": "tsc --build",
     "test": "jest",
     "lint": "eslint .",
-    "prepare": "yarn build"
+    "prepare": "yarn build && husky install"
   },
   "version": "4.0.6",
   "keywords": [
