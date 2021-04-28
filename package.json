@@ -62,7 +62,7 @@
     "lint": "eslint .",
     "prepare": "yarn build && husky install"
   },
-  "version": "4.0.6",
+  "version": "4.0.8",
   "keywords": [
     "storybook-addon",
     "data-state",
