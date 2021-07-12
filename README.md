@@ -97,3 +97,61 @@ In Storybook, click "Show Addons" and navigate to the "Apollo Client" tab.
 To see real world usage of how to use this addon, check out the example app:
 
 https://github.com/lifeiscontent/realworld
+
+## Loading State
+
+You can use the `delay` parameter to simulate loading state.
+
+```
+import DashboardPage, { DashboardPageQuery } from '.';
+
+export default {
+  title: 'My Story',
+};
+
+export const Example = () => <DashboardPage />;
+
+Example.parameters = {
+  apolloClient: {
+    mocks: [
+      {
+        // Use `delay` parameter to increase loading time
+        delay: 1e21,
+        request: {
+          query: DashboardPageQuery,
+        },
+        result: {
+          data: {},
+        },
+      },
+    ],
+  },
+};
+```
+
+## Error State
+
+You can use the `error` parameter to create error state.
+
+```
+import DashboardPage, { DashboardPageQuery } from '.';
+
+export default {
+  title: 'My Story',
+};
+
+export const Example = () => <DashboardPage />;
+
+Example.parameters = {
+  apolloClient: {
+    mocks: [
+      {
+        request: {
+          query: DashboardPageQuery,
+        },
+        error: new Error('This is a mock network error'),
+      },
+    ],
+  },
+};
+```
