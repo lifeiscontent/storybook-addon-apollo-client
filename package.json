@@ -73,5 +73,5 @@
     "icon": "https://pbs.twimg.com/profile_images/1314271818027499522/0WAECoWU_400x400.png"
   },
   "types": "dist/index.d.ts",
-  "version": "4.0.10"
+  "version": "4.0.11"
 }
