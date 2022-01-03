@@ -1,68 +1,42 @@
 {
   "author": {
-    "name": "Aaron Reisman",
     "email": "aaron@lifeiscontent.net",
+    "name": "Aaron Reisman",
     "url": "https://lifeiscontent.net/"
   },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/lifeiscontent/storybook-addon-apollo-client.git"
+  "dependencies": {
+    "tslib": "^2.3.0"
   },
+  "description": "Use Apollo Client in your Storybook stories.",
   "devDependencies": {
-    "@apollo/client": ">=2.0.0",
-    "@apollo/react-testing": ">=3.0.0",
-    "@types/jest": "26.0.24",
-    "@types/webpack-env": "1.16.2",
-    "@typescript-eslint/eslint-plugin": "4.29.0",
-    "@typescript-eslint/parser": "^4.29.0",
-    "eslint": "7.32.0",
+    "@babel/core": "7.16.7",
+    "@storybook/addon-actions": "6.4.9",
+    "@storybook/addons": "6.4.9",
+    "@storybook/client-api": "6.4.9",
+    "@types/jest": "27.4.0",
+    "@typescript-eslint/eslint-plugin": "5.9.0",
+    "@typescript-eslint/parser": "5.9.0",
+    "babel-jest": "27.4.5",
+    "eslint": "8.6.0",
     "eslint-config-prettier": "8.3.0",
-    "eslint-plugin-jest": "24.4.0",
-    "eslint-plugin-react": "7.24.0",
-    "eslint-plugin-react-hooks": "4.2.0",
-    "graphql": "15.5.1",
-    "husky": "7.0.1",
-    "jest": "27.0.6",
-    "prettier": "2.3.2",
+    "eslint-plugin-jest": "25.3.4",
+    "eslint-plugin-react": "7.28.0",
+    "eslint-plugin-react-hooks": "4.3.0",
+    "husky": "^7.0.0",
+    "jest": "27.4.5",
+    "prettier": "2.5.1",
     "react": "17.0.2",
     "react-dom": "17.0.2",
-    "tslib": "2.3.0",
-    "typescript": "4.3.5"
-  },
-  "dependencies": {
-    "@storybook/addons": "^6",
-    "@storybook/api": "^6",
-    "@storybook/components": "^6"
-  },
-  "optionalDependencies": {
-    "@apollo/client": ">=2.0.0",
-    "@apollo/react-testing": ">=3.0.0"
+    "typescript": "4.5.4"
   },
   "engines": {
     "node": ">=10"
   },
   "files": [
-    "dist",
-    "register.js",
-    "preset.js"
+    "dist/**/*",
+    "README.md",
+    "*.js"
   ],
-  "license": "MIT",
-  "main": "dist/index.js",
-  "name": "storybook-addon-apollo-client",
-  "peerDependencies": {
-    "graphql": "^14.0.0 || ^15.0.0",
-    "react": "^16.8.0 || ^17.0.0"
-  },
-  "scripts": {
-    "start": "pnpm build --watch",
-    "clean": "tsc --build --clean",
-    "prebuild": "pnpm clean",
-    "build": "tsc --build",
-    "test": "jest",
-    "lint": "eslint .",
-    "prepare": "pnpm build && husky install"
-  },
-  "version": "4.0.9",
   "keywords": [
     "storybook-addon",
     "data-state",
@@ -70,9 +44,34 @@
     "popular",
     "graphql"
   ],
-  "description": "Use Apollo Client in your Storybook stories.",
+  "license": "MIT",
+  "main": "preset.js",
+  "name": "storybook-addon-apollo-client",
+  "peerDependencies": {
+    "@storybook/addon-actions": "^6.0.0",
+    "@storybook/addons": "^6.0.0",
+    "@storybook/client-api": "^6.0.0",
+    "graphql": "^14.0.0 || ^15.0.0",
+    "react": "^16.8.0 || ^17.0.0",
+    "react-dom": "^16.8.0 || ^17.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lifeiscontent/storybook-addon-apollo-client.git"
+  },
+  "scripts": {
+    "build": "tsc --build",
+    "clean": "tsc --build --clean",
+    "lint": "eslint .",
+    "prebuild": "npm run clean",
+    "prepare": "husky install",
+    "start": "npm run build --watch",
+    "test": "jest"
+  },
   "storybook": {
-    "icon": "https://pbs.twimg.com/profile_images/1314271818027499522/0WAECoWU_400x400.png",
-    "displayName": "Apollo Client"
-  }
+    "displayName": "Apollo Client",
+    "icon": "https://pbs.twimg.com/profile_images/1314271818027499522/0WAECoWU_400x400.png"
+  },
+  "types": "dist/index.d.ts",
+  "version": "4.0.9"
 }

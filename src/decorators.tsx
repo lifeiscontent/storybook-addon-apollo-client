@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import { FC } from 'react';
 import { PARAM_KEY, ADDON_ID } from './constants';
 import { useGlobals, useEffect, useParameter } from '@storybook/addons';
 import { print } from 'graphql';
@@ -15,7 +15,7 @@ export const WithApolloClient = (Story: FC<unknown>): JSX.Element => {
     setGlobals({
       [`${ADDON_ID}/queries`]: mocks.map((mock) => print(mock.request.query)),
     });
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   if (!MockedProvider) {

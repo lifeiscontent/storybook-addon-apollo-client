@@ -1,7 +1,4 @@
 {
-  "root": true,
-  "parser": "@typescript-eslint/parser",
-  "plugins": ["@typescript-eslint", "jest"],
   "extends": [
     "eslint:recommended",
     "plugin:@typescript-eslint/recommended",
@@ -10,12 +7,16 @@
     "plugin:react-hooks/recommended",
     "plugin:jest/recommended"
   ],
+  "parser": "@typescript-eslint/parser",
+  "plugins": ["@typescript-eslint", "jest"],
+  "root": true,
+  "rules": {
+    "react/prop-types": 0,
+    "react/react-in-jsx-scope": 0
+  },
   "settings": {
     "react": {
       "version": "detect"
     }
-  },
-  "rules": {
-      "react/prop-types": 0
   }
 }
