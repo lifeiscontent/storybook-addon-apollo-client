@@ -1,4 +1,3 @@
-import React from 'react';
 import { addons, RenderOptions, types } from '@storybook/addons';
 import { AddonPanel } from '@storybook/components';
 import { ApolloClientPanel } from './panel';

@@ -32,7 +32,10 @@ export const ApolloClientPanel: React.FC = () => {
 
   const queries = globals[`${ADDON_ID}/queries`] ?? [];
 
-  const { mocks = [] } = useParameter<Partial<Parameters>>(PARAM_KEY, {}) as Partial<Parameters>;
+  const { mocks = [] } = useParameter<Partial<Parameters>>(
+    PARAM_KEY,
+    {}
+  ) as Partial<Parameters>;
   const [activeMockIndex, setActiveMockIndex] = useState<number>(() =>
     mocks.length ? 0 : -1
   );
