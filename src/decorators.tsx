@@ -4,7 +4,7 @@ import { useGlobals, useEffect, useParameter } from '@storybook/addons';
 import { print } from 'graphql';
 import type { Parameters } from './types';
 
-export const WithApolloClient = (Story: FC<unknown>): JSX.Element => {
+export const WithApolloClient = (story: any): JSX.Element => {
   const { MockedProvider, ...providerProps } = useParameter<
     Partial<Parameters>
   >(PARAM_KEY, {}) as Partial<Parameters>;
@@ -23,12 +23,12 @@ export const WithApolloClient = (Story: FC<unknown>): JSX.Element => {
       'storybook-addon-apollo-client: MockedProvider is missing from parameters in preview.js'
     );
 
-    return <Story />;
+    return story();
   }
 
   return (
     <MockedProvider {...providerProps}>
-      <Story />
+      {story()}
     </MockedProvider>
   );
 };
