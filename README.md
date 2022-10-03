@@ -155,3 +155,87 @@ Example.parameters = {
   },
 };
 ```
+
+
+### Vue Support
+
+In order to use this plugin with [@storybook/vue3](https://www.npmjs.com/package/@storybook/vue3):
+
+Add the addon to your configuration in `.storybook/main.js`
+
+```js
+module.exports = {
+  ...config,
+  addons: [
+    ...your addons
+    "storybook-addon-apollo-client/preset-vue",
+  ],
+};
+```
+
+create a component in `.storebook/MockedProvider.vue`
+```vue
+<script setup lang="ts">
+import { ApolloClient, DefaultOptions } from '@apollo/client/core';
+import { InMemoryCache as Cache } from '@apollo/client/cache';
+import { MockLink, MockedResponse } from '@apollo/client/testing/core';
+import type { ApolloLink } from '@apollo/client/link/core';
+import type { Resolvers } from '@apollo/client/core';
+import type { ApolloCache } from '@apollo/client/cache';
+import {DefaultApolloClient} from "@vue/apollo-composable";
+import {provide} from "vue";
+
+export interface MockedProviderOptions<TSerializedCache = {}> {
+    mocks?: ReadonlyArray<MockedResponse>;
+    addTypename?: boolean;
+    defaultOptions?: DefaultOptions;
+    cache?: ApolloCache<TSerializedCache>;
+    resolvers?: Resolvers;
+    childProps?: object;
+    children?: any;
+    link?: ApolloLink;
+}
+
+const {
+    mocks,
+    addTypename,
+    defaultOptions,
+    cache,
+    resolvers,
+    link
+} = defineProps<MockedProviderOptions>();
+
+const client = new ApolloClient({
+    cache: cache || new Cache({ addTypename }),
+    defaultOptions,
+    link: link || new MockLink(
+        mocks || [],
+        addTypename,
+    ),
+    resolvers,
+});
+
+provide(DefaultApolloClient as Symbol, client);
+</script>
+
+<template>
+    <slot></slot>
+</template>
+```
+
+> **_NOTE:_**  If someone with time could publish the component as a separate package installation and usage could be simplified
+
+add the following to your `.storybook/preview.js`
+
+```js
+import MockedProvider from './MockedProvider'; // Use for Apollo Version 3+
+
+export const parameters = {
+  apolloClient: {
+    MockedProvider,
+    // any props you want to pass to MockedProvider on every story
+  },
+};
+```
+
+any other instruction will work as expected.
