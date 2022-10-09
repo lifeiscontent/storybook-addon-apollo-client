@@ -5,22 +5,20 @@
     "url": "https://lifeiscontent.net/"
   },
   "dependencies": {
-    "@storybook/addons": "^6.5.9",
-    "@storybook/components": "^6.5.9",
+    "@storybook/addons": "6.5.12",
+    "@storybook/components": "6.5.12",
     "tslib": "^2.4.0"
   },
   "description": "Use Apollo Client in your Storybook stories.",
   "devDependencies": {
-    "@types/react": "17.x",
-    "@typescript-eslint/eslint-plugin": "^5.29.0",
-    "eslint": "^8.18.0",
+    "@types/react": "18.0.21",
+    "@typescript-eslint/eslint-plugin": "5.39.0",
+    "eslint": "8.25.0",
     "eslint-config-prettier": "^8.5.0",
-    "eslint-plugin-jest": "^26.5.3",
-    "eslint-plugin-react": "^7.30.1",
+    "eslint-plugin-react": "7.31.8",
     "eslint-plugin-react-hooks": "^4.6.0",
-    "graphql": "^16.5.0",
+    "graphql": "16.6.0",
     "husky": "^8.0.1",
-    "jest": "^28.1.1",
     "prettier": "^2.7.1",
     "react": "*"
   },
@@ -51,8 +49,7 @@
     "clean": "tsc --build --clean",
     "lint": "eslint .",
     "prebuild": "npm run clean",
-    "prepare": "husky install",
-    "test": "jest"
+    "prepare": "husky install"
   },
   "storybook": {
     "displayName": "Apollo Client",
@@ -61,6 +58,7 @@
   "types": "dist/index.d.ts",
   "version": "4.0.12",
   "peerDependencies": {
-    "react": ">=16.8.0"
+    "react": ">=16.8.0",
+    "graphql": "*"
   }
 }
