@@ -1,14 +1,27 @@
 import React, { Fragment, useState } from 'react';
 import { useGlobals, useParameter } from '@storybook/api';
 import {
-  Form,
-  Placeholder,
-  SyntaxHighlighter,
+  Form as _Form,
+  Placeholder as _Placeholder,
+  SyntaxHighlighter as _SyntaxHighlighter,
   TabsState,
 } from '@storybook/components';
 import { PARAM_KEY, ADDON_ID } from './constants';
 import { MockedResponse, Parameters } from './types';
 import { OperationDefinitionNode } from 'graphql';
+
+const Form: {
+  Field: React.FC<
+    React.ComponentProps<typeof _Form.Field> & { children: React.ReactNode }
+  >;
+  Select: React.FC<
+    React.ComponentProps<typeof _Form.Select> & { children: React.ReactNode }
+  >;
+} = _Form;
+const Placeholder: React.FC<
+  React.ComponentProps<typeof _Placeholder> & { children: React.ReactNode }
+> = _Placeholder;
+const SyntaxHighlighter: React.FC<React.ComponentProps<typeof _SyntaxHighlighter> & { children: React.ReactNode }> = _SyntaxHighlighter;
 
 const getOperationName = (mockedResponse: MockedResponse): string => {
   if (mockedResponse.request.operationName) {
