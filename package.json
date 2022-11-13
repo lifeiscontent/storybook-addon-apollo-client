@@ -5,8 +5,8 @@
     "url": "https://lifeiscontent.net/"
   },
   "dependencies": {
-    "@storybook/addons": "6.5.13",
-    "@storybook/components": "6.5.13",
+    "@storybook/addons": "~6.5.13",
+    "@storybook/components": "~6.5.13",
     "tslib": "^2.4.0"
   },
   "description": "Use Apollo Client in your Storybook stories.",
