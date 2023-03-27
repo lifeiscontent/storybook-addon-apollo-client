@@ -58,8 +58,8 @@
   "types": "dist/index.d.ts",
   "version": "4.1.2",
   "peerDependencies": {
-    "@storybook/addons": ">=6.5.0",
-    "@storybook/components": ">=6.5.0",
+    "@storybook/addons": "~6.5.12",
+    "@storybook/components": "~6.5.12",
     "react": ">=16.8.0",
     "graphql": "*"
   }
