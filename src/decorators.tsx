@@ -1,6 +1,6 @@
 import { FC } from 'react';
-import { PARAM_KEY, ADDON_ID } from './constants';
-import { useGlobals, useEffect, useParameter } from '@storybook/addons';
+import { EVENTS, PARAM_KEY } from './constants';
+import { useParameter, useChannel, useEffect } from '@storybook/addons';
 import { print } from 'graphql';
 import type { Parameters } from './types';
 
@@ -9,14 +9,14 @@ export const WithApolloClient = (Story: FC<unknown>): JSX.Element => {
     Partial<Parameters>
   >(PARAM_KEY, {}) as Partial<Parameters>;
   const { mocks = [] } = providerProps ?? {};
-  const [, setGlobals] = useGlobals();
-
+  const emit = useChannel({}, []);
   useEffect(() => {
-    setGlobals({
-      [`${ADDON_ID}/queries`]: mocks.map((mock) => print(mock.request.query)),
+    emit(EVENTS.RESULT, {
+      activeIndex: mocks.length ? 0 : -1,
+      mocks,
+      queries: mocks.map((mock) => print(mock.request.query)),
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [emit, mocks]);
 
   if (!MockedProvider) {
     console.warn(

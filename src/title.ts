@@ -4,9 +4,9 @@ import { PARAM_KEY } from './constants';
 
 export function getTitle(): string {
   // eslint-disable-next-line react-hooks/rules-of-hooks
-  const params = useParameter<Parameters>(PARAM_KEY);
+  const { mocks = [] } = useParameter<Parameters>(PARAM_KEY, {
+    mocks: [],
+  });
 
-  return params?.mocks?.length
-    ? `Apollo Client (${params.mocks.length})`
-    : 'Apollo Client (0)';
+  return mocks.length ? `Apollo Client (${mocks.length})` : 'Apollo Client (0)';
 }
