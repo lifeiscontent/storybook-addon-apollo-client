@@ -1,16 +1,16 @@
-import { DocumentNode } from "graphql";
+import { DocumentNode } from 'graphql';
 
 export interface MockedProviderProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [key: string]: any;
-  mocks?: ReadonlyArray<MockedResponse>;
+  mocks?: MockedResponse[];
   children?: React.ReactNode;
 }
 
 export type MockedProvider = React.FC<MockedProviderProps>;
 
 export interface Parameters extends MockedProviderProps {
-  MockedProvider: MockedProvider;
+  MockedProvider?: MockedProvider;
 }
 
 export interface MockedResponse {

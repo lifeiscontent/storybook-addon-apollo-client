@@ -1,14 +1,14 @@
-import React, { Fragment, useState } from 'react';
-import { useGlobals, useParameter } from '@storybook/api';
+import React, { Fragment, useEffect, useState } from 'react';
+
 import {
   Form as _Form,
   Placeholder as _Placeholder,
   SyntaxHighlighter as _SyntaxHighlighter,
   TabsState,
 } from '@storybook/components';
-import { PARAM_KEY, ADDON_ID } from './constants';
-import { MockedResponse, Parameters } from './types';
+import { MockedResponse } from './types';
 import { OperationDefinitionNode } from 'graphql';
+import { setStore, store, subscribeStore } from './store';
 
 const Form: {
   Field: React.FC<
@@ -21,7 +21,11 @@ const Form: {
 const Placeholder: React.FC<
   React.ComponentProps<typeof _Placeholder> & { children: React.ReactNode }
 > = _Placeholder;
-const SyntaxHighlighter: React.FC<React.ComponentProps<typeof _SyntaxHighlighter> & { children: React.ReactNode }> = _SyntaxHighlighter;
+const SyntaxHighlighter: React.FC<
+  React.ComponentProps<typeof _SyntaxHighlighter> & {
+    children: React.ReactNode;
+  }
+> = _SyntaxHighlighter;
 
 const getOperationName = (mockedResponse: MockedResponse): string => {
   if (mockedResponse.request.operationName) {
@@ -41,32 +45,33 @@ const getOperationName = (mockedResponse: MockedResponse): string => {
 };
 
 export const ApolloClientPanel: React.FC = () => {
-  const [globals] = useGlobals();
-
-  const queries = globals[`${ADDON_ID}/queries`] ?? [];
-
-  const { mocks = [] } = useParameter<Partial<Parameters>>(
-    PARAM_KEY,
-    {}
-  ) as Partial<Parameters>;
-  const [activeMockIndex, setActiveMockIndex] = useState<number>(() =>
-    mocks.length ? 0 : -1
+  const [{ mocks, activeIndex, queries }, _setState] = useState(() => store);
+  useEffect(
+    () =>
+      subscribeStore((update) => {
+        _setState(update);
+      }),
+    []
   );
 
   if (mocks.length === 0) {
     return <Placeholder>No mocks for this story</Placeholder>;
   }
 
-  const mockedResponse = mocks[activeMockIndex];
-  const query = queries[activeMockIndex];
+  const mockedResponse = mocks[activeIndex];
+  const query = queries[activeIndex];
 
   return (
-    <Fragment key={activeMockIndex}>
+    <Fragment key={query}>
       <Form.Field label="Mocks">
         <Form.Select
-          value={activeMockIndex}
+          value={activeIndex}
+          disabled={activeIndex === -1}
           onChange={(event) =>
-            setActiveMockIndex(Number(event.currentTarget.value))
+            setStore((prev) => ({
+              ...prev,
+              activeIndex: Number(event.currentTarget.value),
+            }))
           }
           size="auto"
         >
