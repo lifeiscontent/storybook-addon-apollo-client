@@ -1,31 +1,14 @@
-import React, { Fragment, useEffect, useState } from 'react';
-
+import { Fragment } from 'react';
+import { useAddonState, useChannel } from '@storybook/manager-api';
 import {
-  Form as _Form,
-  Placeholder as _Placeholder,
-  SyntaxHighlighter as _SyntaxHighlighter,
+  Form,
+  Placeholder,
+  SyntaxHighlighter,
   TabsState,
 } from '@storybook/components';
-import { MockedResponse } from './types';
 import { OperationDefinitionNode } from 'graphql';
-import { setStore, store, subscribeStore } from './store';
-
-const Form: {
-  Field: React.FC<
-    React.ComponentProps<typeof _Form.Field> & { children: React.ReactNode }
-  >;
-  Select: React.FC<
-    React.ComponentProps<typeof _Form.Select> & { children: React.ReactNode }
-  >;
-} = _Form;
-const Placeholder: React.FC<
-  React.ComponentProps<typeof _Placeholder> & { children: React.ReactNode }
-> = _Placeholder;
-const SyntaxHighlighter: React.FC<
-  React.ComponentProps<typeof _SyntaxHighlighter> & {
-    children: React.ReactNode;
-  }
-> = _SyntaxHighlighter;
+import { ADDON_ID, EVENTS } from './constants';
+import { MockedResponse } from './types';
 
 const getOperationName = (mockedResponse: MockedResponse): string => {
   if (mockedResponse.request.operationName) {
@@ -44,15 +27,21 @@ const getOperationName = (mockedResponse: MockedResponse): string => {
   return 'Unnamed';
 };
 
+type State = {
+  queries: string[];
+  mocks: MockedResponse[];
+  activeIndex: number;
+};
+
 export const ApolloClientPanel: React.FC = () => {
-  const [{ mocks, activeIndex, queries }, _setState] = useState(() => store);
-  useEffect(
-    () =>
-      subscribeStore((update) => {
-        _setState(update);
-      }),
-    []
+  const [{ mocks, activeIndex, queries }, _setState] = useAddonState<State>(
+    ADDON_ID,
+    { mocks: [], activeIndex: -1, queries: [] }
   );
+
+  useChannel({
+    [EVENTS.RESULT]: _setState,
+  });
 
   if (mocks.length === 0) {
     return <Placeholder>No mocks for this story</Placeholder>;
@@ -68,7 +57,7 @@ export const ApolloClientPanel: React.FC = () => {
           value={activeIndex}
           disabled={activeIndex === -1}
           onChange={(event) =>
-            setStore((prev) => ({
+            _setState((prev) => ({
               ...prev,
               activeIndex: Number(event.currentTarget.value),
             }))

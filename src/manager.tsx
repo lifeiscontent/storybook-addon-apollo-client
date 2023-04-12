@@ -1,22 +1,21 @@
-import { addons, types } from '@storybook/addons';
+import { addons, types } from '@storybook/manager-api';
 import { AddonPanel } from '@storybook/components';
 import { ApolloClientPanel } from './panel';
-import { ADDON_ID, EVENTS, PANEL_ID, PARAM_KEY } from './constants';
-import { getTitle } from './title';
-import { setStore } from './store';
+import { ADDON_ID, PANEL_ID, PARAM_KEY } from './constants';
+import { Title } from './title';
 
 addons.register(ADDON_ID, (api) => {
-  const channel = api.getChannel();
-  channel.addListener(EVENTS.RESULT, setStore);
   addons.add(PANEL_ID, {
     paramKey: PARAM_KEY,
-    title: getTitle,
+    title: <Title />,
     type: types.PANEL,
     match: ({ viewMode }) => viewMode === 'story',
     render({ active = false, key }) {
+      if (!active || !api.getCurrentStoryData()) return null;
+
       return (
         <AddonPanel key={key} active={active}>
-          {!active || !api.getCurrentStoryData() ? null : <ApolloClientPanel />}
+          <ApolloClientPanel />
         </AddonPanel>
       );
     },

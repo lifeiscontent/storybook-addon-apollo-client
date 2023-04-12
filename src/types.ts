@@ -11,6 +11,7 @@ export type MockedProvider = React.FC<MockedProviderProps>;
 
 export interface Parameters extends MockedProviderProps {
   MockedProvider?: MockedProvider;
+  globalMocks?: MockedResponse[];
 }
 
 export interface MockedResponse {

@@ -5,31 +5,26 @@
     "url": "https://lifeiscontent.net/"
   },
   "dependencies": {
-    "@storybook/addons": "~6.5.12",
-    "@storybook/components": "~6.5.12",
-    "tslib": "^2.4.0"
+    "@storybook/components": "^7.0.0",
+    "tslib": "2.5.3"
   },
   "description": "Use Apollo Client in your Storybook stories.",
   "devDependencies": {
-    "@types/react": "18.0.21",
-    "@typescript-eslint/eslint-plugin": "5.39.0",
-    "eslint": "8.25.0",
-    "eslint-config-prettier": "^8.5.0",
-    "eslint-plugin-react": "7.31.8",
+    "@types/react": "^18.2.14",
+    "@types/webpack-env": "^1.18.1",
+    "@typescript-eslint/eslint-plugin": "^5.60.0",
+    "eslint": "^8.43.0",
+    "eslint-config-prettier": "^8.8.0",
+    "eslint-plugin-react": "^7.32.2",
     "eslint-plugin-react-hooks": "^4.6.0",
-    "graphql": "16.6.0",
-    "husky": "^8.0.1",
-    "prettier": "^2.7.1",
-    "react": "*"
+    "graphql": "^16.7.1",
+    "husky": "^8.0.3",
+    "prettier": "^2.8.8",
+    "react": "^18.2.0"
   },
   "engines": {
     "node": ">=10"
   },
-  "files": [
-    "dist/**/*",
-    "README.md",
-    "*.js"
-  ],
   "keywords": [
     "storybook-addon",
     "data-state",
@@ -38,27 +33,74 @@
     "graphql"
   ],
   "license": "MIT",
-  "main": "preset.js",
   "name": "storybook-addon-apollo-client",
+  "peerDependencies": {
+    "@storybook/addons": "^7.0.0",
+    "graphql": "*",
+    "react": "^16.8.0 || ^17.0.0 || ^18.0.0"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/lifeiscontent/storybook-addon-apollo-client.git"
   },
   "scripts": {
-    "build": "tsc --build",
-    "clean": "tsc --build --clean",
+    "build": "tsc --build tsconfig.mjs.json && tsc --build tsconfig.cjs.json",
     "lint": "eslint .",
-    "prebuild": "npm run clean",
-    "prepare": "husky install"
+    "prepare": "husky install && npm run build"
   },
   "storybook": {
     "displayName": "Apollo Client",
     "icon": "https://pbs.twimg.com/profile_images/1314271818027499522/0WAECoWU_400x400.png"
   },
-  "types": "dist/index.d.ts",
   "version": "4.1.4",
-  "peerDependencies": {
-    "react": ">=16.8.0",
-    "graphql": "*"
-  }
+  "exports": {
+    ".": {
+      "require": {
+        "default": "./lib/cjs/index.js",
+        "types": "./lib/cjs/index.d.ts"
+      },
+      "import": {
+        "default": "./lib/mjs/index.js",
+        "types": "./lib/mjs/index.d.ts"
+      }
+    },
+    "./manager": {
+      "require": {
+        "default": "./lib/cjs/manager.js",
+        "types": "./lib/cjs/manager.d.ts"
+      },
+      "import": {
+        "default": "./lib/mjs/manager.js",
+        "types": "./lib/mjs/manager.d.ts"
+      }
+    },
+    "./preview": {
+      "require": {
+        "default": "./lib/cjs/preview.js",
+        "types": "./lib/cjs/preview.d.ts"
+      },
+      "import": {
+        "default": "./lib/mjs/preview.js",
+        "types": "./lib/mjs/preview.d.ts"
+      }
+    },
+    "./register": {
+      "require": {
+        "default": "./lib/cjs/manager.js",
+        "types": "./lib/cjs/manager.d.ts"
+      },
+      "import": {
+        "default": "./lib/mjs/manager.js",
+        "types": "./lib/mjs/manager.d.ts"
+      }
+    },
+    "./package.json": "./package.json"
+  },
+  "main": "lib/cjs/index.js",
+  "module": "lib/mjs/index.js",
+  "types": "lib/cjs/index.d.ts",
+  "files": [
+    "lib/**/*",
+    "README.md"
+  ]
 }
