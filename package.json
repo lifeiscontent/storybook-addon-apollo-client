@@ -52,7 +52,7 @@
     "displayName": "Apollo Client",
     "icon": "https://pbs.twimg.com/profile_images/1314271818027499522/0WAECoWU_400x400.png"
   },
-  "version": "4.1.4",
+  "version": "5.0.0",
   "exports": {
     ".": {
       "require": {
