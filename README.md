@@ -6,6 +6,11 @@ Use Apollo Client in your Storybook stories.
 
 - If you're using Apollo Client 2.x and Storybook 5.x use version 1.x
 - If you're using Apollo Client 2.x or 3.x and Storybook 6.x use version 4.x
+- If you're using Apollo Client 2.x or 3.x and Storybook 7.x use version 5.x
+
+## Known issues
+
+due to how MockedProvider works in Apollo, you will have to hard refresh when visiting sub stories (visiting stories that exist in the same file) to get the expected results, please upvote my comment here to see if we can get this fixed: https://github.com/apollographql/apollo-client/issues/9738#issuecomment-1606316338
 
 ## Install
 
@@ -45,6 +50,25 @@ export const parameters = {
     // any props you want to pass to MockedProvider on every story
   },
 };
+```
+
+## 5.0 Features
+- added functionality to provide mocks within the `preview` using the new `globalMocks` key
+
+```js
+import { MockedProvider } from '@apollo/client/testing'; // Use for Apollo Version 3+
+// import { MockedProvider } from "@apollo/react-testing"; // Use for Apollo Version < 3
+
+export const preview = {
+  parameters: {
+    apolloClient: {
+      MockedProvider,
+      globalMocks: [
+        // whatever mocks you want here
+      ]
+    }
+  }
+}
 ```
 
 ## Upgrading from a previous version
