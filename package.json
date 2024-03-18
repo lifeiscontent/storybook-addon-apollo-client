@@ -56,42 +56,42 @@
   "exports": {
     ".": {
       "require": {
-        "default": "./lib/cjs/index.js",
-        "types": "./lib/cjs/index.d.ts"
+        "types": "./lib/cjs/index.d.ts",
+        "default": "./lib/cjs/index.js"
       },
       "import": {
-        "default": "./lib/mjs/index.js",
-        "types": "./lib/mjs/index.d.ts"
+        "types": "./lib/mjs/index.d.ts",
+        "default": "./lib/mjs/index.js"
       }
     },
     "./manager": {
       "require": {
-        "default": "./lib/cjs/manager.js",
-        "types": "./lib/cjs/manager.d.ts"
+        "types": "./lib/cjs/manager.d.ts",
+        "default": "./lib/cjs/manager.js"
       },
       "import": {
-        "default": "./lib/mjs/manager.js",
-        "types": "./lib/mjs/manager.d.ts"
+        "types": "./lib/mjs/manager.d.ts",
+        "default": "./lib/mjs/manager.js"
       }
     },
     "./preview": {
       "require": {
-        "default": "./lib/cjs/preview.js",
-        "types": "./lib/cjs/preview.d.ts"
+        "types": "./lib/cjs/preview.d.ts",
+        "default": "./lib/cjs/preview.js"
       },
       "import": {
-        "default": "./lib/mjs/preview.js",
-        "types": "./lib/mjs/preview.d.ts"
+        "types": "./lib/mjs/preview.d.ts",
+        "default": "./lib/mjs/preview.js"
       }
     },
     "./register": {
       "require": {
-        "default": "./lib/cjs/manager.js",
-        "types": "./lib/cjs/manager.d.ts"
+        "types": "./lib/cjs/manager.d.ts",
+        "default": "./lib/cjs/manager.js"
       },
       "import": {
-        "default": "./lib/mjs/manager.js",
-        "types": "./lib/mjs/manager.d.ts"
+        "types": "./lib/mjs/manager.d.ts",
+        "default": "./lib/mjs/manager.js"
       }
     },
     "./package.json": "./package.json"
