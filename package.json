@@ -5,7 +5,7 @@
     "url": "https://lifeiscontent.net/"
   },
   "dependencies": {
-    "@storybook/components": "^7.0.0",
+    "@storybook/components": "^8.0.0",
     "tslib": "2.5.3"
   },
   "description": "Use Apollo Client in your Storybook stories.",
@@ -35,9 +35,9 @@
   "license": "MIT",
   "name": "storybook-addon-apollo-client",
   "peerDependencies": {
-    "@storybook/addons": "^7.0.0",
-    "graphql": "*",
-    "react": "^16.8.0 || ^17.0.0 || ^18.0.0"
+    "@storybook/preview-api": "^8.0.0",
+    "@storybook/manager-api": "^8.0.0",
+    "graphql": "*"
   },
   "repository": {
     "type": "git",
@@ -52,7 +52,7 @@
     "displayName": "Apollo Client",
     "icon": "https://pbs.twimg.com/profile_images/1314271818027499522/0WAECoWU_400x400.png"
   },
-  "version": "5.0.0",
+  "version": "6.0.0",
   "exports": {
     ".": {
       "require": {
