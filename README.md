@@ -7,6 +7,7 @@ Use Apollo Client in your Storybook stories.
 - If you're using Apollo Client 2.x and Storybook 5.x use version 1.x
 - If you're using Apollo Client 2.x or 3.x and Storybook 6.x use version 4.x
 - If you're using Apollo Client 2.x or 3.x and Storybook 7.x use version 5.x
+- If you're using Apollo Client 2.x or 3.x and Storybook 8.x use version 6.x
 
 ## Known issues
 

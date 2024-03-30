@@ -10,11 +10,11 @@ addons.register(ADDON_ID, (api) => {
     title: <Title />,
     type: types.PANEL,
     match: ({ viewMode }) => viewMode === 'story',
-    render({ active = false, key }) {
+    render({ active = false }) {
       if (!active || !api.getCurrentStoryData()) return null;
 
       return (
-        <AddonPanel key={key} active={active}>
+        <AddonPanel active={active}>
           <ApolloClientPanel />
         </AddonPanel>
       );
