@@ -7,7 +7,7 @@ Use Apollo Client in your Storybook stories.
 - If you're using Apollo Client 2.x and Storybook 5.x use version 1.x
 - If you're using Apollo Client 2.x or 3.x and Storybook 6.x use version 4.x
 - If you're using Apollo Client 2.x or 3.x and Storybook 7.x use version 5.x
-- If you're using Apollo Client 2.x or 3.x and Storybook 8.x use version 6.x
+- If you're using Apollo Client 2.x or 3.x and Storybook 8.x use version 7.x
 
 ## Known issues
 
@@ -15,49 +15,48 @@ due to how MockedProvider works in Apollo, you will have to hard refresh when vi
 
 ## Install
 
+**pnpm**
+
+```shell
+pnpm add -D storybook-addon-apollo-client
+```
+
 **yarn**
 
-```
-yarn add --dev storybook-addon-apollo-client
+```shell
+yarn add -D storybook-addon-apollo-client
 ```
 
 **npm**
 
-```
+```shell
 npm install -D storybook-addon-apollo-client
 ```
 
-Add the addon to your configuration in `.storybook/main.js`
+Add the addon to your configuration in `.storybook/main.ts`
 
 ```js
-module.exports = {
+export default {
   ...config,
   addons: [
-    ...your addons
+    ...yourAddons
     "storybook-addon-apollo-client",
   ],
 };
 ```
 
-add the following to your `.storybook/preview.js`
+## 7.0 Features
+
+- removed `globalMocks` key to favor composition
+
+### Migrate from 5.x+ to 7.x
+
+#### Example of < 7.x
+
+**preview.ts**
 
 ```js
-import { MockedProvider } from '@apollo/client/testing'; // Use for Apollo Version 3+
-// import { MockedProvider } from "@apollo/react-testing"; // Use for Apollo Version < 3
-
-export const parameters = {
-  apolloClient: {
-    MockedProvider,
-    // any props you want to pass to MockedProvider on every story
-  },
-};
-```
-
-## 5.0 Features
-- added functionality to provide mocks within the `preview` using the new `globalMocks` key
-
-```js
-import { MockedProvider } from '@apollo/client/testing'; // Use for Apollo Version 3+
+import { MockedProvider } from "@apollo/client/testing"; // Use for Apollo Version 3+
 // import { MockedProvider } from "@apollo/react-testing"; // Use for Apollo Version < 3
 
 export const preview = {
@@ -66,13 +65,52 @@ export const preview = {
       MockedProvider,
       globalMocks: [
         // whatever mocks you want here
-      ]
-    }
-  }
-}
+      ],
+    },
+  },
+};
 ```
 
-## Upgrading from a previous version
+#### Example of 7.x
+
+**preview.ts**
+
+```js
+// Whatever you want here, but not Apollo Client related
+```
+
+**component.stories.ts**
+
+```ts
+import type { Meta } from "@storybook/react";
+import { globalMocks } from "./globalMocks";
+import { otherMocks } from "./otherMocks";
+import { YourComponent, YOUR_QUERY } from "./component";
+
+export const meta: Meta<typeof DisplayLocation> = {
+  component: YourComponent,
+  parameters: {
+    apolloClient: {
+      mocks: [
+        ...globalMocks,
+        ...otherMocks,
+        {
+          request: {
+            query: YOUR_QUERY,
+          },
+          result: {
+            data: {
+              // your data here
+            },
+          },
+        },
+      ],
+    },
+  },
+};
+```
+
+## Upgrading from a previous version below 6.x
 
 In previous versions, we had a decorator called `withApolloClient` this is no longer nesscessary. If you're upgrading from this API here are the following changes that you'll need to make:
 
@@ -82,17 +120,16 @@ In previous versions, we had a decorator called `withApolloClient` this is no lo
 ## Writing your stories with queries
 
 ```jsx
-import DashboardPage, { DashboardPageQuery } from '.';
+import DashboardPage, { DashboardPageQuery } from ".";
 
 export default {
-  title: 'My Story',
+  title: "My Story",
 };
 
 export const Example = () => <DashboardPage />;
 
 Example.parameters = {
   apolloClient: {
-    // do not put MockedProvider here, you can, but its preferred to do it in preview.js
     mocks: [
       {
         request: {
@@ -127,11 +164,11 @@ https://github.com/lifeiscontent/realworld
 
 You can use the `delay` parameter to simulate loading state.
 
-```
-import DashboardPage, { DashboardPageQuery } from '.';
+```js
+import DashboardPage, { DashboardPageQuery } from ".";
 
 export default {
-  title: 'My Story',
+  title: "My Story",
 };
 
 export const Example = () => <DashboardPage />;
@@ -141,7 +178,7 @@ Example.parameters = {
     mocks: [
       {
         // Use `delay` parameter to increase loading time
-        delay: 1e21,
+        delay: 1000,
         request: {
           query: DashboardPageQuery,
         },
@@ -158,11 +195,11 @@ Example.parameters = {
 
 You can use the `error` parameter to create error state.
 
-```
-import DashboardPage, { DashboardPageQuery } from '.';
+```js
+import DashboardPage, { DashboardPageQuery } from ".";
 
 export default {
-  title: 'My Story',
+  title: "My Story",
 };
 
 export const Example = () => <DashboardPage />;
@@ -174,7 +211,7 @@ Example.parameters = {
         request: {
           query: DashboardPageQuery,
         },
-        error: new Error('This is a mock network error'),
+        error: new ApolloError("This is a mock network error"),
       },
     ],
   },

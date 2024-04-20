@@ -1,7 +1,9 @@
-export const ADDON_ID = 'apollo-client' as const;
-export const PANEL_ID = `${ADDON_ID}/panel` as const;
-export const PARAM_KEY = 'apolloClient' as const;
+export const ADDON_ID = "storybook/apollo-client";
+export const PANEL_ID = `${ADDON_ID}/panel`;
+export const PARAM_KEY = `apolloClient`;
+
 export const EVENTS = {
-  REQUEST: `${ADDON_ID}/REQUEST`,
-  RESULT: `${ADDON_ID}/RESULT`,
-} as const;
+  RESULT: `${ADDON_ID}/result`,
+  REQUEST: `${ADDON_ID}/request`,
+  CLEAR: `${ADDON_ID}/clear`,
+};

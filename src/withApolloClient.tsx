@@ -1,45 +1,35 @@
-/* eslint-disable react-hooks/rules-of-hooks */
-import type { Renderer, StoryContext } from '@storybook/types';
-import { EVENTS, PARAM_KEY } from './constants';
-import { useEffect, useChannel } from '@storybook/preview-api';
-import { print } from 'graphql';
+import { useChannel } from "@storybook/preview-api";
+import { EVENTS, PARAM_KEY } from "./constants";
+import { print } from "graphql";
+import { MockedProvider } from "@apollo/client/testing";
+import { DecoratorFunction } from "@storybook/types";
 
-export function withApolloClient<T extends Renderer>(
-  Story: React.FC<unknown>,
-  context: StoryContext<T>
-): T['storyResult'] {
-  const {
-    MockedProvider,
-    mocks: providedMocks,
-    globalMocks,
-    ...props
-  } = context.parameters[PARAM_KEY];
+export const withApolloClient: DecoratorFunction = (StoryFn, context) => {
+  const props = context.parameters[PARAM_KEY] ?? {};
+  const Story = StoryFn as React.FC;
 
-  const emit = useChannel({}, []);
-  useEffect(() => {
-    const mocks = [...(globalMocks ?? []), ...(providedMocks ?? [])];
-    emit(EVENTS.RESULT, {
-      activeIndex: mocks.length ? 0 : -1,
-      mocks,
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      queries: mocks.map((mock: any) => print(mock.request.query)),
-    });
-  }, [emit, globalMocks, providedMocks]);
+  const emit = useChannel({
+    [EVENTS.REQUEST]: () => {
+      emit(EVENTS.RESULT, {
+        mocks: props.mocks ?? [],
+        queries: props.mocks?.map((mock) => print(mock.request.query)) ?? [],
+      });
+    },
+    [EVENTS.CLEAR]: () => {
+      emit(EVENTS.RESULT, {
+        mocks: [],
+        queries: [],
+      });
+    },
+  });
 
-  if (!MockedProvider) {
-    console.warn(
-      'storybook-addon-apollo-client: MockedProvider is missing from parameters in preview'
-    );
-
+  if (!props.mocks?.length) {
     return <Story />;
   }
 
   return (
-    <MockedProvider
-      {...props}
-      mocks={[...(globalMocks ?? []), ...(providedMocks ?? [])]}
-    >
+    <MockedProvider {...props}>
       <Story />
     </MockedProvider>
   );
-}
+};
