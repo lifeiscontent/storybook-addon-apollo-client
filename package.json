@@ -1,106 +1,111 @@
 {
-  "author": {
-    "email": "aaron@lifeiscontent.net",
-    "name": "Aaron Reisman",
-    "url": "https://lifeiscontent.net/"
-  },
-  "dependencies": {
-    "@storybook/components": "^8.0.0",
-    "tslib": "2.5.3"
-  },
+  "name": "storybook-addon-apollo-client",
+  "version": "0.0.0",
   "description": "Use Apollo Client in your Storybook stories.",
-  "devDependencies": {
-    "@types/react": "^18.2.14",
-    "@types/webpack-env": "^1.18.1",
-    "@typescript-eslint/eslint-plugin": "^5.60.0",
-    "eslint": "^8.43.0",
-    "eslint-config-prettier": "^8.8.0",
-    "eslint-plugin-react": "^7.32.2",
-    "eslint-plugin-react-hooks": "^4.6.0",
-    "graphql": "^16.7.1",
-    "husky": "^8.0.3",
-    "prettier": "^2.8.8",
-    "react": "^18.2.0"
-  },
-  "engines": {
-    "node": "20.x"
-  },
   "keywords": [
     "storybook-addon",
     "data-state",
     "apollo",
     "popular",
-    "graphql"
+    "graphql",
+    "storybook-addons"
   ],
-  "license": "MIT",
-  "name": "storybook-addon-apollo-client",
-  "peerDependencies": {
-    "@storybook/preview-api": "^8.0.0",
-    "@storybook/manager-api": "^8.0.0",
-    "graphql": "*"
-  },
   "repository": {
     "type": "git",
-    "url": "https://github.com/lifeiscontent/storybook-addon-apollo-client.git"
+    "url": "https://github.com/lifeiscontent/storybook-addon-apollo-client"
   },
+  "type": "module",
+  "license": "MIT",
+  "author": "Aaron Reisman <aaron@lifeiscontent.net>",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    },
+    "./preview": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/preview.js",
+      "require": "./dist/preview.cjs"
+    },
+    "./manager": "./dist/manager.js",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist/**/*",
+    "README.md",
+    "*.js",
+    "*.d.ts"
+  ],
   "scripts": {
-    "build": "tsc --build tsconfig.mjs.json && tsc --build tsconfig.cjs.json",
-    "lint": "eslint .",
-    "prepare": "husky install && npm run build"
+    "build": "tsup",
+    "build:watch": "npm run build -- --watch",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "run-p build:watch 'storybook --quiet'",
+    "prerelease": "zx scripts/prepublish-checks.js",
+    "release": "npm run build && auto shipit",
+    "eject-ts": "zx scripts/eject-typescript.js",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build"
+  },
+  "devDependencies": {
+    "@apollo/client": "^3.9.11",
+    "@storybook/addon-essentials": "8.0.8",
+    "@storybook/addon-interactions": "8.0.8",
+    "@storybook/addon-links": "8.0.8",
+    "@storybook/blocks": "8.0.8",
+    "@storybook/components": "8.0.8",
+    "@storybook/core-events": "8.0.8",
+    "@storybook/manager": "8.0.8",
+    "@storybook/manager-api": "8.0.8",
+    "@storybook/preview": "8.0.8",
+    "@storybook/preview-api": "8.0.8",
+    "@storybook/react": "8.0.8",
+    "@storybook/react-vite": "8.0.8",
+    "@storybook/test": "8.0.8",
+    "@storybook/theming": "8.0.8",
+    "@storybook/types": "8.0.8",
+    "@types/node": "^18.15.0",
+    "@types/react": "^18.2.65",
+    "@types/react-dom": "^18.2.21",
+    "@vitejs/plugin-react": "^4.2.1",
+    "auto": "^11.1.1",
+    "boxen": "^7.1.1",
+    "dedent": "^1.5.1",
+    "graphql": "^16.8.1",
+    "npm-run-all": "^4.1.5",
+    "prettier": "^3.2.5",
+    "prompts": "^2.4.2",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "storybook": "8.0.8",
+    "tsup": "^8.0.2",
+    "typescript": "^5.4.2",
+    "vite": "^5.1.6",
+    "zx": "^7.2.3"
+  },
+  "peerDependencies": {
+    "@apollo/client": "^3.0.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "bundler": {
+    "exportEntries": [
+      "src/index.ts"
+    ],
+    "managerEntries": [
+      "src/manager.ts"
+    ],
+    "previewEntries": [
+      "src/preview.ts"
+    ]
   },
   "storybook": {
     "displayName": "Apollo Client",
-    "icon": "https://pbs.twimg.com/profile_images/1314271818027499522/0WAECoWU_400x400.png"
-  },
-  "version": "6.0.0",
-  "exports": {
-    ".": {
-      "require": {
-        "types": "./lib/cjs/index.d.ts",
-        "default": "./lib/cjs/index.js"
-      },
-      "import": {
-        "types": "./lib/mjs/index.d.ts",
-        "default": "./lib/mjs/index.js"
-      }
-    },
-    "./manager": {
-      "require": {
-        "types": "./lib/cjs/manager.d.ts",
-        "default": "./lib/cjs/manager.js"
-      },
-      "import": {
-        "types": "./lib/mjs/manager.d.ts",
-        "default": "./lib/mjs/manager.js"
-      }
-    },
-    "./preview": {
-      "require": {
-        "types": "./lib/cjs/preview.d.ts",
-        "default": "./lib/cjs/preview.js"
-      },
-      "import": {
-        "types": "./lib/mjs/preview.d.ts",
-        "default": "./lib/mjs/preview.js"
-      }
-    },
-    "./register": {
-      "require": {
-        "types": "./lib/cjs/manager.d.ts",
-        "default": "./lib/cjs/manager.js"
-      },
-      "import": {
-        "types": "./lib/mjs/manager.d.ts",
-        "default": "./lib/mjs/manager.js"
-      }
-    },
-    "./package.json": "./package.json"
-  },
-  "main": "lib/cjs/index.js",
-  "module": "lib/mjs/index.js",
-  "types": "lib/cjs/index.d.ts",
-  "files": [
-    "lib/**/*",
-    "README.md"
-  ]
+    "supportedFrameworks": [
+      "react"
+    ],
+    "icon": "https://user-images.githubusercontent.com/321738/63501763-88dbf600-c4cc-11e9-96cd-94adadc2fd72.png"
+  }
 }

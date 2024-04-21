@@ -1,26 +1,13 @@
-import { DocumentNode } from 'graphql';
+import type {
+  MockedResponse,
+  MockedProviderProps,
+} from "@apollo/client/testing";
 
-export interface MockedProviderProps {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  [key: string]: any;
-  mocks?: MockedResponse[];
-  children?: React.ReactNode;
-}
+export type ApolloAddonState = {
+  mocks: MockedResponse[];
+  queries: string[];
+};
 
-export type MockedProvider = React.FC<MockedProviderProps>;
-
-export interface Parameters extends MockedProviderProps {
-  MockedProvider?: MockedProvider;
-  globalMocks?: MockedResponse[];
-}
-
-export interface MockedResponse {
-  request: {
-    operationName?: string;
-    query: DocumentNode;
-    variables: JSON;
-    context?: JSON;
-  };
-  result?: JSON;
-  error?: Error;
-}
+export type ApolloParameters = {
+  apolloClient?: Partial<Omit<MockedProviderProps, "children">>;
+};
