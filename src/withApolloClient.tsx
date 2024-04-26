@@ -5,14 +5,14 @@ import { MockedProvider } from "@apollo/client/testing";
 import { DecoratorFunction } from "@storybook/types";
 
 export const withApolloClient: DecoratorFunction = (StoryFn, context) => {
-  const props = context.parameters[PARAM_KEY] ?? {};
+  const props = context.parameters[PARAM_KEY];
   const Story = StoryFn as React.FC;
 
   const emit = useChannel({
     [EVENTS.REQUEST]: () => {
       emit(EVENTS.RESULT, {
-        mocks: props.mocks ?? [],
-        queries: props.mocks?.map((mock) => print(mock.request.query)) ?? [],
+        mocks: props?.mocks ?? [],
+        queries: props?.mocks?.map((mock) => print(mock.request.query)) ?? [],
       });
     },
     [EVENTS.CLEAR]: () => {
@@ -23,7 +23,7 @@ export const withApolloClient: DecoratorFunction = (StoryFn, context) => {
     },
   });
 
-  if (!props.mocks?.length) {
+  if (!props) {
     return <Story />;
   }
 
