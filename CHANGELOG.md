@@ -1,3 +1,15 @@
+# v7.3.0 (Fri Apr 26 2024)
+
+#### 🚀 Enhancement
+
+- build(deps-dev): bump vite from 5.1.6 to 5.1.7 [#115](https://github.com/lifeiscontent/storybook-addon-apollo-client/pull/115) ([@dependabot[bot]](https://github.com/dependabot[bot]))
+
+#### Authors: 1
+
+- [@dependabot[bot]](https://github.com/dependabot[bot])
+
+---
+
 # v7.1.0 (Fri Apr 26 2024)
 
 #### 🚀 Enhancement
