@@ -1,6 +1,6 @@
 {
   "name": "storybook-addon-apollo-client",
-  "version": "7.0.0",
+  "version": "7.2.0",
   "description": "Use Apollo Client in your Storybook stories.",
   "keywords": [
     "storybook-addon",
