@@ -2,6 +2,8 @@
 
 Use Apollo Client in your Storybook stories.
 
+This addon currently works with **React only**.
+
 ## Versions
 
 - If you're using Apollo Client 2.x and Storybook 5.x use version 1.x
