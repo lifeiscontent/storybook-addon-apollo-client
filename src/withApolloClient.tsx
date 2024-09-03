@@ -11,7 +11,11 @@ export const withApolloClient: DecoratorFunction = (StoryFn, context) => {
   const emit = useChannel({
     [EVENTS.REQUEST]: () => {
       emit(EVENTS.RESULT, {
-        mocks: props?.mocks ?? [],
+        mocks:
+          props?.mocks?.map((mock) => ({
+            ...mock,
+            variableMatcher: mock.variableMatcher?.toString(),
+          })) ?? [],
         queries: props?.mocks?.map((mock) => print(mock.request.query)) ?? [],
       });
     },

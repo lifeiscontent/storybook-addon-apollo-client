@@ -24,7 +24,7 @@ function TabContent({
 }: {
   children: any;
   fallback: string;
-  language: "json" | "graphql";
+  language: "json" | "graphql" | "jsx";
 }) {
   return children ? (
     <SyntaxHighlighter bordered copyable language={language} padded>
@@ -64,9 +64,18 @@ export const PanelContent: React.FC<PanelContentProps> = ({ mock, query }) => {
         id="variables"
         title="Variables"
       >
-        <TabContent fallback="No variables in request" language="json">
-          {mock.request.variables}
-        </TabContent>
+        {mock.variableMatcher ? (
+          <TabContent
+            fallback="No valid variableMatcher in request"
+            language="jsx"
+          >
+            {mock.variableMatcher}
+          </TabContent>
+        ) : (
+          <TabContent fallback="No variables in request" language="json">
+            {mock.request.variables}
+          </TabContent>
+        )}
       </div>
       <div
         color={convert(themes.normal).color.defaultText}
