@@ -1,11 +1,11 @@
 /* eslint-disable eslint-comments/disable-enable-pair */
 /* eslint-disable no-console */
-import prompts from 'prompts';
-import { dedent } from 'ts-dedent';
-import { dirname, resolve } from 'path';
-import { readFile, writeFile } from 'fs/promises';
-import { execSync } from 'child_process';
-import { fileURLToPath } from 'url';
+import prompts from "prompts";
+import { dedent } from "ts-dedent";
+import { dirname, resolve } from "path";
+import { readFile, writeFile } from "fs/promises";
+import { execSync } from "child_process";
+import { fileURLToPath } from "url";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -105,9 +105,9 @@ const main = async () => {
         dedent`
         Welcome to Storybook addon-kit!
         Please answer the following questions while we prepare this project for you:\n
-      `
-      )
-    )
+      `,
+      ),
+    ),
   );
 
   const {
@@ -124,8 +124,8 @@ const main = async () => {
   if (!authorName || !packageName) {
     console.log(
       `\nProcess canceled by the user. Feel free to run ${bold(
-        "npm run postinstall"
-      )} to execute the installation steps again!`
+        "npm run postinstall",
+      )} to execute the installation steps again!`,
     );
     process.exit(0);
   }
@@ -145,7 +145,7 @@ const main = async () => {
     .replace(REPLACE_TEMPLATES.repoUrl, repoUrl)
     .replace(REPLACE_TEMPLATES.displayName, displayName)
     .replace(REPLACE_TEMPLATES.supportedFrameworks, supportedFrameworks)
-    .replace(/\s*"postinstall".*node.*scripts\/welcome.js.*",/, '');
+    .replace(/\s*"postinstall".*node.*scripts\/welcome.js.*",/, "");
 
   await writeFile(packageJson, packageJsonContents);
 
@@ -160,7 +160,7 @@ const main = async () => {
     dedent`
     # Storybook Addon ${displayName}
     ${addonDescription}
-    `
+    `,
   );
 
   await writeFile(readme, readmeContents);
@@ -177,7 +177,7 @@ const main = async () => {
       Feel free to open issues in case there are bugs/feature requests at:
 
       ${bold(blue("https://github.com/storybookjs/addon-kit"))}\n
-    `
+    `,
   );
 };
 

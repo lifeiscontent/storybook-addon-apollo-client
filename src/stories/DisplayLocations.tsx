@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import { useQuery, gql } from "@apollo/client";
 
 export const GET_LOCATIONS_QUERY = gql`

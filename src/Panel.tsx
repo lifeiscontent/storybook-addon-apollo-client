@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import type { MockedResponse } from "@apollo/client/testing";
 import type { OperationDefinitionNode } from "graphql";
 import { useEffect, useState } from "react";

@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 
 import { useChannel } from "storybook/internal/preview-api";
 import { EVENTS, PARAM_KEY } from "./constants";
