@@ -1,4 +1,3 @@
-import { Fragment, useState } from "react";
 import { styled, themes, convert } from "@storybook/theming";
 import {
   TabsState,

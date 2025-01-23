@@ -2,11 +2,10 @@ import { useChannel } from "@storybook/preview-api";
 import { EVENTS, PARAM_KEY } from "./constants";
 import { print } from "graphql";
 import { MockedProvider } from "@apollo/client/testing";
-import { DecoratorFunction } from "@storybook/types";
+import { Decorator } from "@storybook/react";
 
-export const withApolloClient: DecoratorFunction = (StoryFn, context) => {
+export const withApolloClient: Decorator = (Story, context) => {
   const props = context.parameters[PARAM_KEY];
-  const Story = StoryFn as React.FC;
 
   const emit = useChannel({
     [EVENTS.REQUEST]: () => {

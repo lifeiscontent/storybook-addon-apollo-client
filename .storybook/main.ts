@@ -6,7 +6,6 @@ const config: StorybookConfig = {
     "@storybook/addon-essentials",
     "@storybook/addon-interactions",
     "./local-preset.js",
-    "@chromatic-com/storybook"
   ],
   framework: {
     name: "@storybook/react-vite",
