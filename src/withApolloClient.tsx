@@ -1,4 +1,6 @@
-import { useChannel } from "@storybook/preview-api";
+import React from 'react';
+
+import { useChannel } from "storybook/internal/preview-api";
 import { EVENTS, PARAM_KEY } from "./constants";
 import { print } from "graphql";
 import { MockedProvider } from "@apollo/client/testing";
