@@ -1,13 +1,16 @@
-import { useAddonState, useChannel } from "@storybook/manager-api";
-import { AddonPanel, Form } from "@storybook/components";
-import { ADDON_ID, EVENTS } from "./constants";
-import { PanelContent } from "./components/PanelContent";
+import React from "react";
 import type { MockedResponse } from "@apollo/client/testing";
 import type { OperationDefinitionNode } from "graphql";
-import { STORY_CHANGED, STORY_RENDERED } from "@storybook/core-events";
-import { ApolloAddonState } from "./types";
-import { Addon_RenderOptions } from "@storybook/types";
 import { useEffect, useState } from "react";
+
+import { AddonPanel, Form } from "storybook/internal/components";
+import { STORY_CHANGED, STORY_RENDERED } from "storybook/internal/core-events";
+import { useAddonState, useChannel } from "storybook/internal/manager-api";
+import { Addon_RenderOptions } from "storybook/internal/types";
+
+import { PanelContent } from "./components/PanelContent";
+import { ADDON_ID, EVENTS } from "./constants";
+import { ApolloAddonState } from "./types";
 
 const getMockName = (mockedResponse: MockedResponse): string => {
   if (mockedResponse.request.operationName) {

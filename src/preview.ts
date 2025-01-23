@@ -1,7 +1,7 @@
-import type { Renderer, ProjectAnnotations } from "@storybook/types";
+import type { Preview } from "@storybook/react";
 import { withApolloClient } from "./withApolloClient";
 
-const preview: ProjectAnnotations<Renderer> = {
+const preview: Preview = {
   decorators: [withApolloClient],
 };
 

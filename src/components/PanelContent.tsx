@@ -1,12 +1,13 @@
-import { Fragment, useState } from "react";
-import { styled, themes, convert } from "@storybook/theming";
-import {
-  TabsState,
-  Placeholder,
-  Button,
-  SyntaxHighlighter,
-} from "@storybook/components";
+import React from "react";
+
 import type { MockedResponse } from "@apollo/client/testing";
+import {
+  Button,
+  Placeholder,
+  SyntaxHighlighter,
+  TabsState,
+} from "storybook/internal/components";
+import { convert, styled, themes } from "storybook/internal/theming";
 
 export const RequestDataButton = styled(Button)({
   marginTop: "1rem",
@@ -69,7 +70,7 @@ export const PanelContent: React.FC<PanelContentProps> = ({ mock, query }) => {
         </TabContent>
       </div>
       <div
-        color={convert(themes.normal).color.defaultText}
+        color={convert(themes.normal).color.ancillary}
         id="extensions"
         title="Extensions"
       >
@@ -78,7 +79,7 @@ export const PanelContent: React.FC<PanelContentProps> = ({ mock, query }) => {
         </TabContent>
       </div>
       <div
-        color={convert(themes.normal).color.defaultText}
+        color={convert(themes.normal).color.medium}
         id="context"
         title="Context"
       >
