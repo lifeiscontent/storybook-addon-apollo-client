@@ -70,7 +70,7 @@ export const PanelContent: React.FC<PanelContentProps> = ({ mock, query }) => {
         </TabContent>
       </div>
       <div
-        color={convert(themes.normal).color.defaultText}
+        color={convert(themes.normal).color.ancillary}
         id="extensions"
         title="Extensions"
       >
@@ -79,7 +79,7 @@ export const PanelContent: React.FC<PanelContentProps> = ({ mock, query }) => {
         </TabContent>
       </div>
       <div
-        color={convert(themes.normal).color.defaultText}
+        color={convert(themes.normal).color.medium}
         id="context"
         title="Context"
       >
