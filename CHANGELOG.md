@@ -1,3 +1,20 @@
+# v8.0.0 (Thu Jan 23 2025)
+
+#### 💥 Breaking Change
+
+- feat: react 19 support [#125](https://github.com/lifeiscontent/storybook-addon-apollo-client/pull/125) ([@lifeiscontent](https://github.com/lifeiscontent) [@yannbf](https://github.com/yannbf))
+
+#### 🐛 Bug Fix
+
+- Fix React 19 support [#126](https://github.com/lifeiscontent/storybook-addon-apollo-client/pull/126) ([@yannbf](https://github.com/yannbf))
+
+#### Authors: 2
+
+- Aaron ([@lifeiscontent](https://github.com/lifeiscontent))
+- Yann Braga ([@yannbf](https://github.com/yannbf))
+
+---
+
 # v7.3.0 (Fri Apr 26 2024)
 
 #### 🚀 Enhancement
