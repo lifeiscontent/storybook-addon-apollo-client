@@ -1,11 +1,13 @@
-import { styled, themes, convert } from "@storybook/theming";
-import {
-  TabsState,
-  Placeholder,
-  Button,
-  SyntaxHighlighter,
-} from "@storybook/components";
+import React from 'react';
+
 import type { MockedResponse } from "@apollo/client/testing";
+import {
+  Button,
+  Placeholder,
+  SyntaxHighlighter,
+  TabsState,
+} from "storybook/internal/components";
+import { convert, styled, themes } from "storybook/internal/theming";
 
 export const RequestDataButton = styled(Button)({
   marginTop: "1rem",
