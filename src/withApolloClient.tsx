@@ -1,5 +1,4 @@
 import React from "react";
-
 import { useChannel } from "storybook/internal/preview-api";
 import { EVENTS, PARAM_KEY } from "./constants";
 import { print } from "graphql";
@@ -25,12 +24,12 @@ export const withApolloClient: Decorator = (Story, context) => {
   });
 
   if (!props) {
-    return <Story />;
+    return <Story {...context} />;
   }
 
   return (
     <MockedProvider {...props}>
-      <Story />
+      <Story {...context} />
     </MockedProvider>
   );
 };

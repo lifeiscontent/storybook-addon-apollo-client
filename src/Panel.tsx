@@ -1,7 +1,6 @@
 import React from "react";
 import type { MockedResponse } from "@apollo/client/testing";
 import type { OperationDefinitionNode } from "graphql";
-import { useEffect, useState } from "react";
 
 import { AddonPanel, Form } from "storybook/internal/components";
 import { STORY_CHANGED, STORY_RENDERED } from "storybook/internal/core-events";
@@ -32,7 +31,7 @@ const getMockName = (mockedResponse: MockedResponse): string => {
 export const Panel: React.FC<Partial<Addon_RenderOptions>> = ({
   active = false,
 }) => {
-  const [activeMockIndex, setActiveMockIndex] = useState(-1);
+  const [activeMockIndex, setActiveMockIndex] = React.useState(-1);
   const [state, setState] = useAddonState<ApolloAddonState>(ADDON_ID, {
     mocks: [],
     queries: [],
@@ -61,7 +60,7 @@ export const Panel: React.FC<Partial<Addon_RenderOptions>> = ({
     },
   });
 
-  useEffect(() => {
+  React.useEffect(() => {
     emit(EVENTS.REQUEST);
   }, []);
 
@@ -70,6 +69,7 @@ export const Panel: React.FC<Partial<Addon_RenderOptions>> = ({
 
   return (
     <AddonPanel active={active}>
+      <>
       <Form.Field label="Mock">
         <Form.Select
           size="flex"
@@ -89,6 +89,7 @@ export const Panel: React.FC<Partial<Addon_RenderOptions>> = ({
         </Form.Select>
       </Form.Field>
       <PanelContent mock={activeMock} query={activeQuery} />
+      </>
     </AddonPanel>
   );
 };
