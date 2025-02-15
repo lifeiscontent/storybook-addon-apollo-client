@@ -1,3 +1,15 @@
+# v8.1.0 (Sat Feb 15 2025)
+
+#### 🚀 Enhancement
+
+- fix: react 18 [#128](https://github.com/lifeiscontent/storybook-addon-apollo-client/pull/128) ([@lifeiscontent](https://github.com/lifeiscontent))
+
+#### Authors: 1
+
+- Aaron ([@lifeiscontent](https://github.com/lifeiscontent))
+
+---
+
 # v8.0.0 (Thu Jan 23 2025)
 
 #### 💥 Breaking Change
