@@ -89,3 +89,29 @@ export const WithError: Story = {
     },
   },
 };
+
+export const WithVariableMatcher: Story = {
+  parameters: {
+    apolloClient: {
+      mocks: [
+        {
+          request: {
+            query: GET_LOCATION_QUERY,
+          },
+          variableMatcher: (variables) => variables.locationId === 1,
+          result: {
+            data: {
+              location: {
+                id: 1,
+                name: "Location 1",
+                description: "This is a location",
+                photo: "https://via.placeholder.com/400x250",
+                __typename: "Location",
+              },
+            },
+          },
+        },
+      ],
+    },
+  },
+};
