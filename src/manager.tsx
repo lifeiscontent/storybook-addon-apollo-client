@@ -2,10 +2,10 @@ import { addons, types } from "storybook/internal/manager-api";
 import { ADDON_ID, PANEL_ID } from "./constants";
 import { Panel } from "./Panel";
 import { Title } from "./Title";
-import { ApolloParameters } from "./types";
+import { ApolloClientParameters } from "./types";
 
 declare module "@storybook/react" {
-  interface Parameters extends ApolloParameters {}
+  interface Parameters extends ApolloClientParameters {}
 }
 
 /**

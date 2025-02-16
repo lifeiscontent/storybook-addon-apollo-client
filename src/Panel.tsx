@@ -9,7 +9,7 @@ import { Addon_RenderOptions } from "storybook/internal/types";
 
 import { PanelContent } from "./components/PanelContent";
 import { ADDON_ID, EVENTS } from "./constants";
-import { ApolloAddonState } from "./types";
+import { ApolloClientAddonState } from "./types";
 
 const getMockName = (mockedResponse: MockedResponse): string => {
   if (mockedResponse.request.operationName) {
@@ -32,13 +32,13 @@ export const Panel: React.FC<Partial<Addon_RenderOptions>> = ({
   active = false,
 }) => {
   const [activeMockIndex, setActiveMockIndex] = React.useState(-1);
-  const [state, setState] = useAddonState<ApolloAddonState>(ADDON_ID, {
+  const [state, setState] = useAddonState<ApolloClientAddonState>(ADDON_ID, {
     mocks: [],
     queries: [],
   });
 
   const emit = useChannel({
-    [EVENTS.RESULT]: (apolloAddonState: ApolloAddonState) => {
+    [EVENTS.RESULT]: (apolloAddonState: ApolloClientAddonState) => {
       setState(apolloAddonState);
       setActiveMockIndex((prev) => {
         if (prev === -1) {
@@ -70,25 +70,25 @@ export const Panel: React.FC<Partial<Addon_RenderOptions>> = ({
   return (
     <AddonPanel active={active}>
       <>
-      <Form.Field label="Mock">
-        <Form.Select
-          size="flex"
-          value={activeMockIndex}
-          disabled={!state.mocks.length}
-          onChange={(event) => {
-            const { value } = event.currentTarget;
-            setActiveMockIndex(Number(value));
-          }}
-        >
-          <option value="">Select a mock</option>
-          {state.mocks.map((mockedResponse, index) => (
-            <option key={index} value={index}>
-              {getMockName(mockedResponse)}
-            </option>
-          ))}
-        </Form.Select>
-      </Form.Field>
-      <PanelContent mock={activeMock} query={activeQuery} />
+        <Form.Field label="Mock">
+          <Form.Select
+            size="flex"
+            value={activeMockIndex}
+            disabled={!state.mocks.length}
+            onChange={(event) => {
+              const { value } = event.currentTarget;
+              setActiveMockIndex(Number(value));
+            }}
+          >
+            <option value="">Select a mock</option>
+            {state.mocks.map((mockedResponse, index) => (
+              <option key={index} value={index}>
+                {getMockName(mockedResponse)}
+              </option>
+            ))}
+          </Form.Select>
+        </Form.Field>
+        <PanelContent mock={activeMock} query={activeQuery} />
       </>
     </AddonPanel>
   );
