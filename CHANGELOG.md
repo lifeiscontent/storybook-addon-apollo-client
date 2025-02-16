@@ -1,3 +1,15 @@
+# v8.1.1 (Sun Feb 16 2025)
+
+#### 🐛 Bug Fix
+
+- chore: add variable matcher example [#129](https://github.com/lifeiscontent/storybook-addon-apollo-client/pull/129) ([@lifeiscontent](https://github.com/lifeiscontent))
+
+#### Authors: 1
+
+- Aaron ([@lifeiscontent](https://github.com/lifeiscontent))
+
+---
+
 # v8.1.0 (Sat Feb 15 2025)
 
 #### 🚀 Enhancement
