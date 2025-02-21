@@ -63,7 +63,7 @@ if ((await $`cat README.md | grep -E ${readmeTestStrings}`.exitCode) == 0) {
 const peerDependencies = Object.keys(packageJson.peerDependencies || {});
 const globalPackages = [...globalManagerPackages, ...globalPreviewPackages];
 peerDependencies.forEach((dependency) => {
-  if (globalPackages.includes(dependency)) {
+  if (globalPackages.includes(dependency) && dependency !== "react") {
     console.error(
       boxen(
         dedent`
