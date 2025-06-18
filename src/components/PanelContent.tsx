@@ -2,16 +2,11 @@ import React from "react";
 
 import type { MockedResponse } from "@apollo/client/testing";
 import {
-  Button,
   Placeholder,
   SyntaxHighlighter,
   TabsState,
 } from "storybook/internal/components";
-import { convert, styled, themes } from "storybook/internal/theming";
-
-export const RequestDataButton = styled(Button)({
-  marginTop: "1rem",
-});
+import { convert, themes } from "storybook/internal/theming";
 
 interface PanelContentProps {
   mock?: MockedResponse;

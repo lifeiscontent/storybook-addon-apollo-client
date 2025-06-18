@@ -1,8 +1,8 @@
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/react-vite";
 
 import { DisplayLocation, GET_LOCATION_QUERY } from "./DisplayLocation";
 import { ApolloError } from "@apollo/client";
-import { expect, fn, within } from "@storybook/test";
+import { expect, fn, within } from "storybook/test";
 import { MockedResponse } from "@apollo/client/testing";
 
 const meta: Meta<typeof DisplayLocation> = {

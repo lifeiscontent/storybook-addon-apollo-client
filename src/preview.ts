@@ -1,7 +1,6 @@
-import type { Preview } from "@storybook/react";
 import { withApolloClient } from "./withApolloClient";
 
-const preview: Preview = {
+const preview = {
   decorators: [withApolloClient],
 };
 
