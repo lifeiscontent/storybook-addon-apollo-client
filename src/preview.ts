@@ -1,7 +1,3 @@
 import { withApolloClient } from "./withApolloClient";
 
-const preview = {
-  decorators: [withApolloClient],
-};
-
-export default preview;
+export const decorators = [withApolloClient];

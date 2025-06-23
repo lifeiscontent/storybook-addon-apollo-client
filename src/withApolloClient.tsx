@@ -3,9 +3,9 @@ import { useChannel } from "storybook/internal/preview-api";
 import { EVENTS, PARAM_KEY } from "./constants";
 import { print } from "graphql";
 import { MockedProvider } from "@apollo/client/testing";
-import { Decorator } from "@storybook/react-vite";
+import type { DecoratorFunction } from "storybook/internal/types";
 
-export const withApolloClient: Decorator = (Story, context) => {
+export const withApolloClient: DecoratorFunction = (Story, context) => {
   const props = context.parameters[PARAM_KEY];
 
   const emit = useChannel({
