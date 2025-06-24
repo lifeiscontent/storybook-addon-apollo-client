@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/react-vite";
 
 import { DisplayLocations, GET_LOCATIONS_QUERY } from "./DisplayLocations";
 import { GET_LOCATION_QUERY } from "./DisplayLocation";
