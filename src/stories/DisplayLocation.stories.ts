@@ -1,17 +1,16 @@
-import type { Meta, StoryObj } from "@storybook/react-vite";
+import type { Meta, StoryObj } from '@storybook/react-vite';
 
-import { DisplayLocation, GET_LOCATION_QUERY } from "./DisplayLocation";
-import { ApolloError } from "@apollo/client";
-import { expect, fn, within } from "storybook/test";
-import { MockedResponse } from "@apollo/client/testing";
+import { DisplayLocation, GET_LOCATION_QUERY } from './DisplayLocation';
+import { ApolloError } from '@apollo/client';
+import { expect, fn, within } from 'storybook/test';
 
 const meta: Meta<typeof DisplayLocation> = {
-  title: "Example/DisplayLocation",
+  title: 'Example/DisplayLocation',
   component: DisplayLocation,
   args: {
     locationId: 1,
   },
-  tags: ["autodocs"],
+  tags: ['autodocs'],
 };
 
 export default meta;
@@ -32,10 +31,10 @@ export const WithResponse: Story = {
             data: {
               location: {
                 id: 1,
-                name: "Location 1",
-                description: "This is a location",
-                photo: "https://placehold.co/400x250",
-                __typename: "Location",
+                name: 'Location 1',
+                description: 'This is a location',
+                photo: 'https://placehold.co/400x250',
+                __typename: 'Location',
               },
             },
           },
@@ -61,10 +60,10 @@ export const WithDelayedResponse: Story = {
             data: {
               location: {
                 id: 1,
-                name: "Location 1",
-                description: "This is a location",
-                photo: "https://placehold.co/400x250",
-                __typename: "Location",
+                name: 'Location 1',
+                description: 'This is a location',
+                photo: 'https://placehold.co/400x250',
+                __typename: 'Location',
               },
             },
           },
@@ -85,7 +84,7 @@ export const WithError: Story = {
               locationId: 1,
             },
           },
-          error: new ApolloError({ errorMessage: "Could not get location" }),
+          error: new ApolloError({ errorMessage: 'Could not get location' }),
         },
       ],
     },
@@ -105,10 +104,10 @@ export const WithVariableMatcher: Story = {
             data: {
               location: {
                 id: 1,
-                name: "Location 1",
-                description: "This is a location",
-                photo: "https://placehold.co/400x250",
-                __typename: "Location",
+                name: 'Location 1',
+                description: 'This is a location',
+                photo: 'https://placehold.co/400x250',
+                __typename: 'Location',
               },
             },
           },
@@ -118,19 +117,13 @@ export const WithVariableMatcher: Story = {
   },
   play: async ({ parameters, canvasElement }) => {
     const canvas = within(canvasElement);
-    const mock = parameters.apolloClient!.mocks![0]!;
-    await expect(
-      // @ts-expect-error - storybook types are wrong
-      canvas.getByRole("heading", { name: mock.result.data.location.name }),
-    ).toBeInTheDocument();
-    await expect(
-      canvas.getByRole("img", { name: "location-reference" }),
-      // @ts-expect-error - storybook types are wrong
-    ).toHaveAttribute("src", mock.result.data.location.photo);
-    await expect(
-      // @ts-expect-error - storybook types are wrong
-      canvas.getByText(mock.result.data.location.description),
-    ).toBeInTheDocument();
+    const mock = parameters.apolloClient.mocks[0];
+    await expect(canvas.getByRole('heading', { name: mock.result.data.location.name })).toBeInTheDocument();
+    await expect(canvas.getByRole('img', { name: 'location-reference' })).toHaveAttribute(
+      'src',
+      mock.result.data.location.photo,
+    );
+    await expect(canvas.getByText(mock.result.data.location.description)).toBeInTheDocument();
     await expect(mock.variableMatcher).toHaveBeenCalledWith({ locationId: 1 });
   },
 };

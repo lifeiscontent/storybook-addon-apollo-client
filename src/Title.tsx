@@ -1,10 +1,10 @@
-import { useParameter } from "storybook/internal/manager-api";
-import { PARAM_KEY } from "./constants";
+import { useParameter } from 'storybook/manager-api';
+import { PARAM_KEY } from './constants';
 
 export function Title() {
-  const { mocks = [] } = useParameter(PARAM_KEY, {
+  const { mocks } = useParameter(PARAM_KEY, {
     mocks: [],
   });
 
-  return mocks.length ? `Apollo Client (${mocks.length})` : "Apollo Client";
+  return mocks.length ? `Apollo Client (${mocks.length})` : 'Apollo Client';
 }

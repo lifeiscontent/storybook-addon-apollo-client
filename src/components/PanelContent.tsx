@@ -1,16 +1,15 @@
-import React from "react";
+import React from 'react';
 
-import type { MockedResponse } from "@apollo/client/testing";
-import {
-  Placeholder,
-  SyntaxHighlighter,
-  TabsState,
-} from "storybook/internal/components";
-import { convert, themes } from "storybook/internal/theming";
+import { Placeholder, SyntaxHighlighter, TabsState } from 'storybook/internal/components';
+import { convert, themes } from 'storybook/theming';
 
 interface PanelContentProps {
-  mock?: MockedResponse;
+  variables?: string;
   query?: string;
+  extensions?: string;
+  context?: string;
+  result?: string;
+  error?: string;
 }
 
 function TabContent({
@@ -18,13 +17,13 @@ function TabContent({
   fallback,
   language,
 }: {
-  children: any;
+  children?: string;
   fallback: string;
-  language: "json" | "graphql";
+  language: 'json' | 'graphql';
 }) {
   return children ? (
     <SyntaxHighlighter bordered copyable language={language} padded>
-      {language === "json" ? JSON.stringify(children, null, 2) : children}
+      {children}
     </SyntaxHighlighter>
   ) : (
     <Placeholder>{fallback}</Placeholder>
@@ -35,69 +34,37 @@ function TabContent({
  * Checkout https://github.com/storybookjs/storybook/blob/next/code/addons/jest/src/components/Panel.tsx
  * for a real world example
  */
-export const PanelContent: React.FC<PanelContentProps> = ({ mock, query }) => {
-  if (!mock) {
-    return <Placeholder>No mock selected</Placeholder>;
-  }
-
+export const PanelContent: React.FC<PanelContentProps> = ({ query, variables, extensions, context, result, error }) => {
   return (
-    <TabsState
-      initial="query"
-      key={query}
-      backgroundColor={convert(themes.normal).background.hoverable}
-    >
-      <div
-        color={convert(themes.normal).color.primary}
-        id="query"
-        title="Query"
-      >
-        <TabContent fallback="Could not parse query" language="graphql">
+    <TabsState initial="variables" key={query} backgroundColor={convert(themes.normal).background.hoverable}>
+      <div color={convert(themes.normal).color.warning} id="variables" title="Variables">
+        <TabContent fallback="No variables in request" language="json">
+          {variables}
+        </TabContent>
+      </div>
+      <div color={convert(themes.normal).color.positive} id="result" title="Result">
+        <TabContent fallback="No result in mock" language="json">
+          {result}
+        </TabContent>
+      </div>
+      <div color={convert(themes.normal).color.negative} id="error" title="Error">
+        <TabContent fallback="No error in mock" language="json">
+          {error}
+        </TabContent>
+      </div>
+      <div color={convert(themes.normal).color.primary} id="query" title="Query">
+        <TabContent fallback="No query in request" language="graphql">
           {query}
         </TabContent>
       </div>
-      <div
-        color={convert(themes.normal).color.warning}
-        id="variables"
-        title="Variables"
-      >
-        <TabContent fallback="No variables in request" language="json">
-          {mock.request.variables}
-        </TabContent>
-      </div>
-      <div
-        color={convert(themes.normal).color.ancillary}
-        id="extensions"
-        title="Extensions"
-      >
+      <div color={convert(themes.normal).color.ancillary} id="extensions" title="Extensions">
         <TabContent fallback="No extensions in request" language="json">
-          {mock.request.extensions}
+          {extensions}
         </TabContent>
       </div>
-      <div
-        color={convert(themes.normal).color.medium}
-        id="context"
-        title="Context"
-      >
+      <div color={convert(themes.normal).color.medium} id="context" title="Context">
         <TabContent fallback="No context in request" language="json">
-          {mock.request.context}
-        </TabContent>
-      </div>
-      <div
-        color={convert(themes.normal).color.positive}
-        id="result"
-        title="Result"
-      >
-        <TabContent fallback="No result in mock" language="json">
-          {mock.result}
-        </TabContent>
-      </div>
-      <div
-        color={convert(themes.normal).color.negative}
-        id="error"
-        title="Error"
-      >
-        <TabContent fallback="No error in mock" language="json">
-          {mock.error}
+          {context}
         </TabContent>
       </div>
     </TabsState>
