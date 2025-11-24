@@ -1,16 +1,10 @@
-import { MockedProviderProps, MockedResponse } from "@apollo/client/testing";
-
 export type ApolloClientAddonState = {
-  mocks: MockedResponse[];
-  queries: string[];
+  options: string[];
+  variables?: string;
+  query?: string;
+  extensions?: string;
+  context?: string;
+  result?: string;
+  error?: string;
+  activeIndex: number;
 };
-
-export interface ApolloClientTypes {
-  parameters: {
-    apolloClient?: ApolloClientParameters;
-  };
-}
-
-export type ApolloClientParameters = Partial<
-  Omit<MockedProviderProps, "children">
->;

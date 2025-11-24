@@ -1,11 +1,11 @@
-import type { Meta, StoryObj } from "@storybook/react-vite";
+import type { Meta, StoryObj } from '@storybook/react-vite';
 
-import { Display } from "./Display";
+import { Display } from './Display';
 
 const meta: Meta<typeof Display> = {
-  title: "Example/Display",
+  title: 'Example/Display',
   component: Display,
-  tags: ["autodocs"],
+  tags: ['autodocs'],
 };
 
 export default meta;
