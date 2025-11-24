@@ -1,3 +1,15 @@
+# v10.0.0 (Mon Nov 24 2025)
+
+#### 💥 Breaking Change
+
+- chore: v10 [#139](https://github.com/lifeiscontent/storybook-addon-apollo-client/pull/139) ([@lifeiscontent](https://github.com/lifeiscontent))
+
+#### Authors: 1
+
+- Aaron ([@lifeiscontent](https://github.com/lifeiscontent))
+
+---
+
 # v9.0.0 (Tue Jun 24 2025)
 
 #### 💥 Breaking Change
