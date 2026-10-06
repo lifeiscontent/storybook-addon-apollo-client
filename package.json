@@ -12,7 +12,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/lifeiscontent/storybook-addon-apollo-client"
+    "url": "git+https://github.com/lifeiscontent/storybook-addon-apollo-client.git"
   },
   "type": "module",
   "license": "MIT",
@@ -21,6 +21,18 @@
     ".": {
       "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
+    },
+    "./core": {
+      "types": "./dist/core.d.ts",
+      "default": "./dist/core.js"
+    },
+    "./vue": {
+      "types": "./dist/vue.d.ts",
+      "default": "./dist/vue.js"
+    },
+    "./angular": {
+      "types": "./dist/angular.d.ts",
+      "default": "./dist/angular.js"
     },
     "./preview": {
       "types": "./dist/preview.d.ts",
@@ -32,57 +44,72 @@
   "files": [
     "dist/**/*",
     "README.md",
-    "*.js",
-    "*.d.ts"
+    "manager.js",
+    "preview.js"
   ],
   "scripts": {
-    "prebuild": "node -e \"fs.rmSync('./dist', { recursive: true, force: true })\"",
-    "build": "tsup",
+    "build": "tsdown",
     "build-storybook": "storybook build",
     "build:watch": "npm run build -- --watch",
-    "eject-ts": "zx scripts/eject-typescript.js",
-    "format": "prettier --write .",
-    "lint": "eslint --cache .",
-    "lint:fix": "pnpm lint --fix",
+    "format": "oxfmt",
+    "format:check": "oxfmt --check",
+    "lint": "oxlint",
+    "lint:fix": "oxlint --fix",
+    "lint:package": "publint --strict && attw --pack . --profile esm-only --exclude-entrypoints manager",
+    "prebuild": "node -e \"fs.rmSync('./dist', { recursive: true, force: true })\"",
     "prerelease": "zx scripts/prepublish-checks.js",
     "release": "npm run build && auto shipit",
     "start": "run-p build:watch \"storybook --quiet\"",
     "storybook": "storybook dev -p 6006",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
-    "@apollo/client": "3.14.0",
-    "@eslint/js": "^9.36.0",
-    "@storybook/addon-docs": "^10.0.0",
-    "@storybook/icons": "^2.0.0",
-    "@storybook/react-vite": "^10.0.0",
-    "@types/node": "^20",
-    "@types/react": "^18.2.65",
-    "@types/react-dom": "^18.2.21",
-    "@vitejs/plugin-react": "^4.7.0",
-    "auto": "^11.3.0",
-    "boxen": "^8.0.1",
-    "eslint": "^9.36.0",
-    "eslint-config-prettier": "^10.1.8",
-    "eslint-plugin-prettier": "^5.5.4",
-    "eslint-plugin-react": "^7.37.5",
-    "eslint-plugin-storybook": "^10.0.0",
-    "graphql": "16.12.0",
-    "npm-run-all2": "^8.0.4",
-    "prettier": "^3.6.2",
+    "@angular/core": "^22.2.1",
+    "@apollo/client": "4.3.2",
+    "@arethetypeswrong/cli": "^0.18.5",
+    "@storybook/addon-docs": "next",
+    "@storybook/addon-vitest": "next",
+    "@storybook/icons": "^2.1.0",
+    "@storybook/react-vite": "next",
+    "@types/node": "^22.12.0",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@vitejs/plugin-react": "^6.1.2",
+    "@vitest/browser-playwright": "^5.0.3",
+    "@vue/apollo-composable": "^4.2.2",
+    "apollo-angular": "^14.2.0",
+    "auto": "^11.3.6",
+    "boxen": "^9.0.0",
+    "eslint-plugin-storybook": "next",
+    "graphql": "17.0.2",
+    "npm-run-all2": "^9.0.3",
+    "oxfmt": "^0.72.0",
+    "oxlint": "^1.87.0",
+    "playwright": "^1.63.0",
     "prompts": "^2.4.2",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "storybook": "^10.0.0",
-    "ts-dedent": "^2.2.0",
-    "tsup": "^8.5.0",
-    "typescript": "^5.8.3",
-    "typescript-eslint": "^8.44.1",
-    "vite": "^7.0.5",
-    "zx": "^8.7.1"
+    "publint": "^0.3.25",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0",
+    "rxjs": "^7.8.2",
+    "storybook": "next",
+    "ts-dedent": "^2.3.0",
+    "tsdown": "^0.23.0",
+    "typescript": "^6.0.3",
+    "unrun": "^0.3.1",
+    "vite": "^8.3.3",
+    "vitest": "^5.0.3",
+    "vue": "^3.5.43",
+    "zx": "^8.8.5"
   },
   "peerDependencies": {
-    "storybook": "*"
+    "@angular/core": ">=18.0.0",
+    "@apollo/client": "^3.8.0 || ^4.0.0",
+    "@vue/apollo-composable": "^4.0.0",
+    "apollo-angular": ">=7.0.0",
+    "graphql": "^16.0.0 || ^17.0.0",
+    "storybook": "^10.1.0 || ^11.0.0-0",
+    "vue": "^3.0.0"
   },
   "publishConfig": {
     "access": "public"
@@ -93,16 +120,35 @@
     ],
     "previewEntries": [
       "src/preview.ts",
-      "src/index.ts"
+      "src/index.ts",
+      "src/core.ts",
+      "src/vue.ts",
+      "src/angular.ts"
     ],
     "nodeEntries": []
   },
   "storybook": {
     "displayName": "Apollo Client",
     "supportedFrameworks": [
-      "react"
+      "react",
+      "vue3",
+      "angular"
     ],
     "icon": "https://raw.githubusercontent.com/apollographql/apollo-client-devtools/main/assets/apollo-wordmark.svg"
   },
-  "packageManager": "pnpm@10.22.0+sha512.bf049efe995b28f527fd2b41ae0474ce29186f7edcb3bf545087bd61fbbebb2bf75362d1307fda09c2d288e1e499787ac12d4fcb617a974718a6051f2eee741c"
+  "packageManager": "pnpm@10.22.0+sha512.bf049efe995b28f527fd2b41ae0474ce29186f7edcb3bf545087bd61fbbebb2bf75362d1307fda09c2d288e1e499787ac12d4fcb617a974718a6051f2eee741c",
+  "peerDependenciesMeta": {
+    "@angular/core": {
+      "optional": true
+    },
+    "@vue/apollo-composable": {
+      "optional": true
+    },
+    "apollo-angular": {
+      "optional": true
+    },
+    "vue": {
+      "optional": true
+    }
+  }
 }

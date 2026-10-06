@@ -10,7 +10,10 @@ Use Apollo Client in your Storybook stories.
 - If you're using Apollo Client 2.x or 3.x and Storybook 8.x use version 7.x
 - If you're using Apollo Client 3.x and Storybook 8.3+ use version 8.x
 - If you're using Apollo Client 3.x and Storybook 9+ use version 9.x
-- If you're using Apollo Client 3.x or 4.x and Storybook 10+ use version 10.x
+- If you're using Apollo Client 3.x or 4.x and Storybook 10.0 use version 10.x
+- If you're using Apollo Client 3.x or 4.x and Storybook 10.1+ or 11 use version 11.x
+
+Version 11.x changes the setup of the addon. To upgrade from 10.x, see [Migrate from 10.x to 11.x](#migrate-from-10x-to-11x).
 
 ## Install
 
@@ -32,504 +35,200 @@ yarn add -D storybook-addon-apollo-client
 npm install -D storybook-addon-apollo-client
 ```
 
-Add the addon to your configuration in `.storybook/main.ts`
+Add the addon to `.storybook/main.ts`. This adds the Apollo Client panel.
 
-```js
-export default {
-  ...config,
+```ts
+import { defineMain } from '@storybook/react-vite/node';
+
+export default defineMain({
+  // ...rest of config
+  addons: ['storybook-addon-apollo-client'],
+});
+```
+
+## Setup
+
+Register the addon in `.storybook/preview.ts` and give it a `createClient` function. The addon:
+
+- calls `createClient` with the `apolloClient` parameter of each story that has one, each time that the story mounts, so each story gets a new cache and new mocks
+- gives the client to the story with the provider of your framework
+- sends the mocks of the current story to the Apollo Client panel
+- types the `apolloClient` parameter with the type of the argument of `createClient`
+
+The setup is the same for each framework. Only the import of the addon changes.
+
+| Framework | Import the addon from                   | The addon gives the client to the story with |
+| --------- | --------------------------------------- | -------------------------------------------- |
+| React     | `storybook-addon-apollo-client`         | `ApolloProvider` from `@apollo/client/react` |
+| Vue 3     | `storybook-addon-apollo-client/vue`     | `@vue/apollo-composable`                     |
+| Angular   | `storybook-addon-apollo-client/angular` | the `Apollo` service of `apollo-angular`     |
+
+```ts
+import { definePreview } from '@storybook/react-vite';
+import { ApolloClient, InMemoryCache } from '@apollo/client';
+import { MockLink } from '@apollo/client/testing';
+import apolloClient from 'storybook-addon-apollo-client';
+
+export default definePreview({
+  // ...rest of preview
   addons: [
-    ...yourAddons
-    "storybook-addon-apollo-client",
+    apolloClient({
+      createClient: ({ mocks = [] }: { mocks?: ReadonlyArray<MockLink.MockedResponse> }) =>
+        new ApolloClient({ cache: new InMemoryCache(), link: new MockLink(mocks) }),
+    }),
   ],
-};
+});
 ```
 
-## Setup for version 10.x
+This example uses Apollo Client 4. With Apollo Client 3, import `MockLink` and `MockedResponse` from `@apollo/client/testing`, and use `MockedResponse` in place of `MockLink.MockedResponse`. For Vue, import from `@apollo/client/core` and `@apollo/client/testing/core`, because the other entries of Apollo Client 3 import React. `@vue/apollo-composable` supports only Apollo Client 3.
 
-To enable the addon panel to display GraphQL queries and responses, you need to set up a decorator in your `.storybook/preview.ts` (or `.tsx`) file. The decorator listens to the `apolloClient` parameters and communicates with the addon panel.
+### Your own options
 
-### React Setup
-
-#### Apollo Client v3
-
-For React projects using `MockedProvider` with Apollo Client v3:
-
-```tsx
-import type { MockedResponse } from '@apollo/client/testing';
-import { MockedProvider } from '@apollo/client/testing';
-import { addons } from 'storybook/internal/preview-api';
-import type { Preview } from '@storybook/react';
-import { print } from 'graphql';
-import { useEffect } from 'react';
-import type { ApolloClientAddonState } from 'storybook-addon-apollo-client';
-import { EVENTS } from 'storybook-addon-apollo-client';
-
-const getMockName = (mockedResponse: MockedResponse) => {
-  if (mockedResponse.request.operationName) {
-    return mockedResponse.request.operationName;
-  }
-
-  const operationDefinition = mockedResponse.request.query.definitions.find(
-    (definition) => definition.kind === 'OperationDefinition',
-  );
-
-  if (operationDefinition?.name) {
-    return operationDefinition.name.value;
-  }
-
-  return `Unnamed`;
-};
-
-function stringifyOrUndefined(value: unknown) {
-  try {
-    return JSON.stringify(value, null, 2);
-  } catch {
-    return undefined;
-  }
-}
-
-function createResultFromMocks(mocks: MockedResponse[], activeIndex: number): ApolloClientAddonState {
-  const mock = mocks[activeIndex];
-  if (!mock) {
-    return {
-      activeIndex: -1,
-      options: mocks.map(getMockName),
-      query: undefined,
-      variables: undefined,
-      extensions: undefined,
-      context: undefined,
-      result: undefined,
-      error: undefined,
-    };
-  }
-  return {
-    options: mocks.map(getMockName),
-    activeIndex: activeIndex,
-    query: print(mock.request.query),
-    variables: stringifyOrUndefined(mock.request.variables),
-    extensions: stringifyOrUndefined(mock.request.extensions),
-    context: stringifyOrUndefined(mock.request.context),
-    result: stringifyOrUndefined(mock.result),
-    error: stringifyOrUndefined(mock.error),
-  };
-}
-
-const preview: Preview = {
-  decorators: [
-    (Story, context) => {
-      useEffect(() => {
-        const { mocks = [] } = context.parameters.apolloClient || {};
-        const channel = addons.getChannel();
-
-        const handleRequest = (activeIndex: number) => {
-          const state = createResultFromMocks(mocks, activeIndex);
-          channel.emit(EVENTS.RESULT, state);
-        };
-
-        // Emit initial state
-        handleRequest(mocks.length ? 0 : -1);
-
-        channel.on(EVENTS.REQUEST, handleRequest);
-
-        return () => {
-          channel.off(EVENTS.REQUEST, handleRequest);
-        };
-      }, [context.parameters.apolloClient]);
-
-      if (!context.parameters.apolloClient) {
-        return <Story />;
-      }
-
-      return (
-        <MockedProvider {...context.parameters.apolloClient}>
-          <Story />
-        </MockedProvider>
-      );
-    },
-  ],
-};
-
-export default preview;
-```
-
-#### Apollo Client v4
-
-For React projects using `MockedProvider` with Apollo Client v4:
-
-```tsx
-import { MockLink } from '@apollo/client/testing';
-import { MockedProvider } from '@apollo/client/testing/react';
-import { addons } from 'storybook/internal/preview-api';
-import type { Preview } from '@storybook/react';
-import { print } from 'graphql';
-import React, { useEffect } from 'react';
-import type { ApolloClientAddonState } from 'storybook-addon-apollo-client';
-import { EVENTS } from 'storybook-addon-apollo-client';
-
-const getMockName = (mockedResponse: MockLink.MockedResponse) => {
-  const operationDefinition = mockedResponse.request.query.definitions.find(
-    (definition) => definition.kind === 'OperationDefinition',
-  );
-
-  if (operationDefinition?.name) {
-    return operationDefinition.name.value;
-  }
-
-  return `Unnamed`;
-};
-
-function stringifyOrUndefined(value: unknown) {
-  try {
-    return JSON.stringify(value, null, 2);
-  } catch {
-    return undefined;
-  }
-}
-
-function createResultFromMocks(mocks: MockLink.MockedResponse[], activeIndex: number): ApolloClientAddonState {
-  const mock = mocks[activeIndex];
-  if (!mock) {
-    return {
-      activeIndex: -1,
-      options: mocks.map(getMockName),
-      query: undefined,
-      variables: undefined,
-      extensions: undefined,
-      context: undefined,
-      result: undefined,
-      error: undefined,
-    };
-  }
-  return {
-    options: mocks.map(getMockName),
-    activeIndex: activeIndex,
-    query: print(mock.request.query),
-    variables: stringifyOrUndefined(mock.request.variables),
-    extensions: undefined,
-    context: undefined,
-    result: stringifyOrUndefined(mock.result),
-    error: String(mock.error),
-  };
-}
-
-const preview: Preview = {
-  decorators: [
-    (Story, context) => {
-      useEffect(() => {
-        const { mocks = [] } = context.parameters.apolloClient || {};
-        const channel = addons.getChannel();
-
-        const handleRequest = (activeIndex: number) => {
-          const state = createResultFromMocks(mocks, activeIndex);
-          channel.emit(EVENTS.RESULT, state);
-        };
-
-        // Emit initial state
-        handleRequest(-1);
-
-        channel.on(EVENTS.REQUEST, handleRequest);
-
-        return () => {
-          channel.off(EVENTS.REQUEST, handleRequest);
-        };
-
-      }, [context.parameters.apolloClient]);
-
-      if (!context.parameters.apolloClient) {
-        return <Story />;
-      }
-
-      return (
-        <MockedProvider {...context.parameters.apolloClient}>
-          <Story />
-        </MockedProvider>
-      );
-    },
-  ],
-};
-
-export default preview;
-```
-
-### Vue Setup
-
-For Vue 3 projects using `@vue/apollo-composable`:
+The `apolloClient` parameter can hold any options that `createClient` takes. For example, give `MockLink` options or a cache with your type policies. This example uses Apollo Client 4:
 
 ```ts
-import type { Preview } from '@storybook/vue3';
-import type { MockedResponse } from '@apollo/client/testing';
-import { MockLink } from '@apollo/client/testing';
-import { ApolloClient, InMemoryCache } from '@apollo/client/core';
-import { provideApolloClient } from '@vue/apollo-composable';
-import { addons } from 'storybook/internal/preview-api';
-import type { ApolloClientAddonState } from 'storybook-addon-apollo-client';
-import { EVENTS } from 'storybook-addon-apollo-client';
-import { print } from 'graphql';
-import { h, onMounted, onUnmounted } from 'vue';
-
-const getMockName = (mockedResponse: MockedResponse) => {
-  if (mockedResponse.request.operationName) {
-    return mockedResponse.request.operationName;
-  }
-
-  const operationDefinition = mockedResponse.request.query.definitions.find(
-    (definition) => definition.kind === 'OperationDefinition',
-  );
-
-  if (operationDefinition?.name) {
-    return operationDefinition.name.value;
-  }
-
-  return `Unnamed`;
-};
-
-function stringifyOrUndefined(value: unknown) {
-  try {
-    return JSON.stringify(value, null, 2);
-  } catch {
-    return undefined;
-  }
-}
-
-function createResultFromMocks(mocks: MockedResponse[], activeIndex: number): ApolloClientAddonState {
-  const mock = mocks[activeIndex];
-  if (!mock) {
-    return {
-      activeIndex: -1,
-      options: mocks.map(getMockName),
-      query: undefined,
-      variables: undefined,
-      extensions: undefined,
-      context: undefined,
-      result: undefined,
-      error: undefined,
-    };
-  }
-  return {
-    options: mocks.map(getMockName),
-    activeIndex: activeIndex,
-    query: print(mock.request.query),
-    variables: stringifyOrUndefined(mock.request.variables),
-    extensions: stringifyOrUndefined(mock.request.extensions),
-    context: stringifyOrUndefined(mock.request.context),
-    result: stringifyOrUndefined(mock.result),
-    error: stringifyOrUndefined(mock.error),
-  };
-}
-
-const preview: Preview = {
-  decorators: [
-    (story, context) => {
-      const { mocks = [] } = context.parameters.apolloClient || {};
-
-      const mockLink = new MockLink(mocks);
-
-      const client = new ApolloClient({
-        cache: new InMemoryCache(),
-        link: mockLink,
-      });
-
-      return {
-        setup() {
-          provideApolloClient(client);
-
-          onMounted(() => {
-            const channel = addons.getChannel();
-
-            const handleRequest = (activeIndex: number) => {
-              const state = createResultFromMocks(mocks, activeIndex);
-              channel.emit(EVENTS.RESULT, state);
-            };
-
-            // Emit initial state
-            handleRequest(mocks.length ? 0 : -1);
-
-            channel.on(EVENTS.REQUEST, handleRequest);
-
-            onUnmounted(() => {
-              channel.off(EVENTS.REQUEST, handleRequest);
-            });
-          });
-
-          return () => h(story());
-        },
-      };
-    },
-  ],
-};
-
-export default preview;
+apolloClient({
+  createClient: ({
+    mocks = [],
+    showWarnings = true,
+  }: {
+    mocks?: ReadonlyArray<MockLink.MockedResponse>;
+    showWarnings?: boolean;
+  }) =>
+    new ApolloClient({
+      cache: new InMemoryCache({ typePolicies }),
+      link: new MockLink(mocks, { showWarnings }),
+    }),
+});
 ```
 
-## 7.0 Features
+If your options have `mocks`, they must be mocked responses, so that the panel can show them. Options without `mocks` are also correct, but then the panel has nothing to show.
 
-- removed `globalMocks` key to favor composition
+### Other renderers
 
-### Migrate from 5.x+ to 7.x
-
-#### Example of < 7.x
-
-**preview.ts**
-
-```js
-import { MockedProvider } from '@apollo/client/testing'; // Use for Apollo Version 3+
-// import { MockedProvider } from "@apollo/react-testing"; // Use for Apollo Version < 3
-
-export const preview = {
-  parameters: {
-    apolloClient: {
-      MockedProvider,
-      globalMocks: [
-        // whatever mocks you want here
-      ],
-    },
-  },
-};
-```
-
-#### Example of 7.x
-
-**preview.ts**
-
-```js
-// Whatever you want here, but not Apollo Client related
-```
-
-**component.stories.ts**
+For other renderers, for example Svelte, use the `/core` entry. It connects the panel and types the `apolloClient` parameter, but you supply the Apollo Client in your own decorator. Give the type of the parameter as a type argument.
 
 ```ts
-import type { Meta } from '@storybook/react';
-import { globalMocks } from './globalMocks';
-import { otherMocks } from './otherMocks';
-import { YourComponent, YOUR_QUERY } from './component';
+import type { MockLink } from '@apollo/client/testing';
+import apolloClient from 'storybook-addon-apollo-client/core';
 
-export const meta: Meta<typeof DisplayLocation> = {
-  component: YourComponent,
+export default definePreview({
+  addons: [apolloClient<{ mocks?: ReadonlyArray<MockLink.MockedResponse> }>()],
+  decorators: [
+    // Your decorator: make a client from context.parameters.apolloClient and give it to the story.
+  ],
+});
+```
+
+## Writing your stories with queries
+
+```ts
+import preview from '../.storybook/preview';
+import { DashboardPage, DashboardPageQuery } from './DashboardPage';
+
+const meta = preview.meta({
+  component: DashboardPage,
+});
+
+export const Example = meta.story({
   parameters: {
     apolloClient: {
       mocks: [
-        ...globalMocks,
-        ...otherMocks,
         {
           request: {
-            query: YOUR_QUERY,
+            query: DashboardPageQuery,
           },
           result: {
             data: {
-              // your data here
+              viewer: null,
             },
           },
         },
       ],
     },
   },
-};
+});
 ```
 
-## Upgrading from a previous version below 6.x
-
-In previous versions, we had a decorator called `withApolloClient` this is no longer nesscessary. If you're upgrading from this API here are the following changes that you'll need to make:
-
-1. remove all code referencing the deprecated withApolloClient decorator.
-2. follow install instructions
-
-## Writing your stories with queries
-
-```jsx
-import DashboardPage, { DashboardPageQuery } from '.';
-
-export default {
-  title: 'My Story',
-};
-
-export const Example = () => <DashboardPage />;
-
-Example.parameters = {
-  apolloClient: {
-    mocks: [
-      {
-        request: {
-          query: DashboardPageQuery,
-        },
-        result: {
-          data: {
-            viewer: null,
-          },
-        },
-      },
-    ],
-  },
-};
-```
-
-Read more about the options available for MockedProvider at https://www.apollographql.com/docs/react/development-testing/testing
+Read more about mocked responses at https://www.apollographql.com/docs/react/development-testing/testing
 
 ### Usage
 
-In Storybook, click "Show Addons" and navigate to the "Apollo Client" tab.
+In Storybook, open the addon panel and select the "Apollo Client" tab. Select a mock to see its query, variables, result, error, extensions, and context.
 
-![Addon UI Preview](preview.png)
+![Addon UI Preview](https://raw.githubusercontent.com/lifeiscontent/storybook-addon-apollo-client/main/preview.png)
+
+## Loading State
+
+Use the `delay` property to show the loading state.
+
+```ts
+export const Loading = meta.story({
+  parameters: {
+    apolloClient: {
+      mocks: [
+        {
+          // The response comes after 1000 ms
+          delay: 1000,
+          request: {
+            query: DashboardPageQuery,
+          },
+          result: {
+            data: {},
+          },
+        },
+      ],
+    },
+  },
+});
+```
+
+## Error State
+
+Use the `error` property to show the error state.
+
+```ts
+export const Failure = meta.story({
+  parameters: {
+    apolloClient: {
+      mocks: [
+        {
+          request: {
+            query: DashboardPageQuery,
+          },
+          error: new Error('This is a mock network error'),
+        },
+      ],
+    },
+  },
+});
+```
+
+## Without `definePreview`
+
+If your `preview.ts` does not use `definePreview`, Storybook loads the panel decorator from `main.ts` automatically. Add the `withApolloClient` decorator from the entry for your framework. The `apolloClient` parameter is not typed in this setup.
+
+```ts
+import type { Preview } from '@storybook/react-vite';
+import { withApolloClient } from 'storybook-addon-apollo-client';
+
+const preview: Preview = {
+  decorators: [withApolloClient(createClient)],
+};
+
+export default preview;
+```
+
+## Migrate from 10.x to 11.x
+
+1. Update to Storybook 10.1 or later.
+2. Remove the Apollo Client decorator and its helper functions from `.storybook/preview.ts`. The addon supplies them now.
+3. Add the addon with a `createClient` function to `addons` in `definePreview`, as shown in [Setup](#setup).
+4. If you gave `MockedProvider` props in your `apolloClient` parameters, for example `cache` or `defaultOptions`, add them to the options of `createClient`. Then use them when you make the client.
+5. Fix the type errors that this shows in your `apolloClient` parameters.
 
 ## Example App
 
 To see real world usage of how to use this addon, check out the example app:
 
 https://github.com/lifeiscontent/realworld
-
-## Loading State
-
-You can use the `delay` parameter to simulate loading state.
-
-```js
-import DashboardPage, { DashboardPageQuery } from '.';
-
-export default {
-  title: 'My Story',
-};
-
-export const Example = () => <DashboardPage />;
-
-Example.parameters = {
-  apolloClient: {
-    mocks: [
-      {
-        // Use `delay` parameter to increase loading time
-        delay: 1000,
-        request: {
-          query: DashboardPageQuery,
-        },
-        result: {
-          data: {},
-        },
-      },
-    ],
-  },
-};
-```
-
-## Error State
-
-You can use the `error` parameter to create error state.
-
-```js
-import DashboardPage, { DashboardPageQuery } from '.';
-
-export default {
-  title: 'My Story',
-};
-
-export const Example = () => <DashboardPage />;
-
-Example.parameters = {
-  apolloClient: {
-    mocks: [
-      {
-        request: {
-          query: DashboardPageQuery,
-        },
-        error: new ApolloError('This is a mock network error'),
-      },
-    ],
-  },
-};
-```
