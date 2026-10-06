@@ -10,8 +10,10 @@ Use Apollo Client in your Storybook stories.
 - If you're using Apollo Client 2.x or 3.x and Storybook 8.x use version 7.x
 - If you're using Apollo Client 3.x and Storybook 8.3+ use version 8.x
 - If you're using Apollo Client 3.x and Storybook 9+ use version 9.x
-- If you're using Apollo Client 3.x or 4.x and Storybook 10+ use version 10.x
-- If you're using Apollo Client 3.x or 4.x and Storybook 11+ use version 11.x
+- If you're using Apollo Client 3.x or 4.x and Storybook 10.0 use version 10.x
+- If you're using Apollo Client 3.x or 4.x and Storybook 10.1+ or 11 use version 11.x
+
+Version 11.x changes the setup of the addon. To upgrade from 10.x, see [Migrate from 10.x to 11.x](#migrate-from-10x-to-11x).
 
 ## Install
 
@@ -219,7 +221,7 @@ export default preview;
 
 ## Migrate from 10.x to 11.x
 
-1. Update to Storybook 11.
+1. Update to Storybook 10.1 or later.
 2. Remove the Apollo Client decorator and its helper functions from `.storybook/preview.ts`. The addon supplies them now.
 3. Add the addon with a `createClient` function to `addons` in `definePreview`, as shown in [Setup](#setup).
 4. If you gave `MockedProvider` props in your `apolloClient` parameters, for example `cache` or `defaultOptions`, add them to the options of `createClient`. Then use them when you make the client.
