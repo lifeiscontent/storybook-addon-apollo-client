@@ -46,75 +46,61 @@ export default defineMain({
 
 ## Setup
 
-Register the addon in `.storybook/preview.ts`. Give it the Apollo Client part that your framework uses. The addon then:
+Register the addon in `.storybook/preview.ts` and give it a `createClient` function. The addon:
 
-- gives each story that has an `apolloClient` parameter a mocked Apollo Client
+- calls `createClient` with the `apolloClient` parameter of each story that has one, each time that the story mounts, so each story gets a new cache and new mocks
+- gives the client to the story with the provider of your framework
 - sends the mocks of the current story to the Apollo Client panel
-- types the `apolloClient` parameter from the part that you give it
+- types the `apolloClient` parameter with the type of the argument of `createClient`
 
-Because the type comes from your own Apollo Client code, it agrees with your Apollo Client version.
+The setup is the same for each framework. Only the import of the addon changes.
 
-### React
-
-Give the addon the `MockedProvider` from your Apollo Client version. The `apolloClient` parameter gets the props of that `MockedProvider`. For example, `addTypename` is a type error with Apollo Client 4, because Apollo Client 4 removed it.
+| Framework | Import the addon from                   | The addon gives the client to the story with |
+| --------- | --------------------------------------- | -------------------------------------------- |
+| React     | `storybook-addon-apollo-client`         | `ApolloProvider` from `@apollo/client/react` |
+| Vue 3     | `storybook-addon-apollo-client/vue`     | `@vue/apollo-composable`                     |
+| Angular   | `storybook-addon-apollo-client/angular` | the `Apollo` service of `apollo-angular`     |
 
 ```ts
 import { definePreview } from '@storybook/react-vite';
-// Apollo Client 4
-import { MockedProvider } from '@apollo/client/testing/react';
-// Apollo Client 3
-// import { MockedProvider } from '@apollo/client/testing';
+import { ApolloClient, InMemoryCache } from '@apollo/client';
+import { MockLink } from '@apollo/client/testing';
 import apolloClient from 'storybook-addon-apollo-client';
 
 export default definePreview({
   // ...rest of preview
-  addons: [apolloClient({ MockedProvider })],
-});
-```
-
-### Vue 3
-
-Use the `/vue` entry with `@vue/apollo-composable`. Give it a `createClient` function. The addon calls it each time that a story mounts, and the `apolloClient` parameter gets the type of its argument.
-
-```ts
-import { definePreview } from '@storybook/vue3-vite';
-import { ApolloClient, InMemoryCache } from '@apollo/client/core';
-import { MockLink, type MockedResponse } from '@apollo/client/testing/core';
-import apolloClient from 'storybook-addon-apollo-client/vue';
-
-export default definePreview({
   addons: [
     apolloClient({
-      createClient: ({ mocks = [] }: { mocks?: ReadonlyArray<MockedResponse> }) =>
+      createClient: ({ mocks = [] }: { mocks?: ReadonlyArray<MockLink.MockedResponse> }) =>
         new ApolloClient({ cache: new InMemoryCache(), link: new MockLink(mocks) }),
     }),
   ],
 });
 ```
 
-`@vue/apollo-composable` supports Apollo Client 3, so this example uses Apollo Client 3. Import from `@apollo/client/core` and `@apollo/client/testing/core`, because the `@apollo/client` and `@apollo/client/testing` entries of Apollo Client 3 import React. With Apollo Client 4, use `MockLink.MockedResponse` from `@apollo/client/testing`, because `MockedResponse` is deprecated there.
+This example uses Apollo Client 4. With Apollo Client 3, import `MockLink` and `MockedResponse` from `@apollo/client/testing`, and use `MockedResponse` in place of `MockLink.MockedResponse`. For Vue, import from `@apollo/client/core` and `@apollo/client/testing/core`, because the other entries of Apollo Client 3 import React. `@vue/apollo-composable` supports only Apollo Client 3.
 
-### Angular
+### Your own options
 
-Use the `/angular` entry with `apollo-angular`. Give it a `createOptions` function that returns the options for `provideApollo`. The addon adds `provideApollo` to the application providers of each story, and the `apolloClient` parameter gets the type of the argument of `createOptions`.
+The `apolloClient` parameter can hold any options that `createClient` takes. For example, give `MockLink` options or a cache with your type policies. This example uses Apollo Client 4:
 
 ```ts
-import { definePreview } from '@storybook/angular';
-import { InMemoryCache } from '@apollo/client';
-import { MockLink } from '@apollo/client/testing';
-import apolloClient from 'storybook-addon-apollo-client/angular';
-
-export default definePreview({
-  addons: [
-    apolloClient({
-      createOptions: ({ mocks = [] }: { mocks?: ReadonlyArray<MockLink.MockedResponse> }) => ({
-        cache: new InMemoryCache(),
-        link: new MockLink(mocks),
-      }),
+apolloClient({
+  createClient: ({
+    mocks = [],
+    showWarnings = true,
+  }: {
+    mocks?: ReadonlyArray<MockLink.MockedResponse>;
+    showWarnings?: boolean;
+  }) =>
+    new ApolloClient({
+      cache: new InMemoryCache({ typePolicies }),
+      link: new MockLink(mocks, { showWarnings }),
     }),
-  ],
 });
 ```
+
+If your options have `mocks`, they must be mocked responses, so that the panel can show them. Options without `mocks` are also correct, but then the panel has nothing to show.
 
 ### Other renderers
 
@@ -125,9 +111,9 @@ import type { MockLink } from '@apollo/client/testing';
 import apolloClient from 'storybook-addon-apollo-client/core';
 
 export default definePreview({
-  addons: [apolloClient<{ mocks?: MockLink.MockedResponse[] }>()],
+  addons: [apolloClient<{ mocks?: ReadonlyArray<MockLink.MockedResponse> }>()],
   decorators: [
-    // Your decorator: make a client from context.parameters.apolloClient.mocks and give it to the story.
+    // Your decorator: make a client from context.parameters.apolloClient and give it to the story.
   ],
 });
 ```
@@ -162,7 +148,7 @@ export const Example = meta.story({
 });
 ```
 
-Read more about the options available for MockedProvider at https://www.apollographql.com/docs/react/development-testing/testing
+Read more about mocked responses at https://www.apollographql.com/docs/react/development-testing/testing
 
 ### Usage
 
@@ -218,15 +204,14 @@ export const Failure = meta.story({
 
 ## Without `definePreview`
 
-If your `preview.ts` does not use `definePreview`, Storybook loads the panel decorator from `main.ts` automatically. Add the provider decorator yourself. Each entry exports one: `withMockedProvider` from the main entry, and `withApolloClient` from `/vue` and `/angular`. The `apolloClient` parameter is not typed in this setup.
+If your `preview.ts` does not use `definePreview`, Storybook loads the panel decorator from `main.ts` automatically. Add the `withApolloClient` decorator from the entry for your framework. The `apolloClient` parameter is not typed in this setup.
 
 ```ts
 import type { Preview } from '@storybook/react-vite';
-import { MockedProvider } from '@apollo/client/testing/react';
-import { withMockedProvider } from 'storybook-addon-apollo-client';
+import { withApolloClient } from 'storybook-addon-apollo-client';
 
 const preview: Preview = {
-  decorators: [withMockedProvider(MockedProvider)],
+  decorators: [withApolloClient(createClient)],
 };
 
 export default preview;
@@ -236,8 +221,9 @@ export default preview;
 
 1. Update to Storybook 11.
 2. Remove the Apollo Client decorator and its helper functions from `.storybook/preview.ts`. The addon supplies them now.
-3. Add the addon to `addons` in `definePreview`, as shown in [Setup](#setup) for your framework.
-4. Fix the type errors that this shows in your `apolloClient` parameters.
+3. Add the addon with a `createClient` function to `addons` in `definePreview`, as shown in [Setup](#setup).
+4. If you gave `MockedProvider` props in your `apolloClient` parameters, for example `cache` or `defaultOptions`, add them to the options of `createClient`. Then use them when you make the client.
+5. Fix the type errors that this shows in your `apolloClient` parameters.
 
 ## Example App
 

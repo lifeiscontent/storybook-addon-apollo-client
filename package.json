@@ -66,7 +66,6 @@
   "devDependencies": {
     "@angular/core": "^22.2.1",
     "@apollo/client": "4.3.2",
-    "@apollo/client-v3": "npm:@apollo/client@3.14.0",
     "@arethetypeswrong/cli": "^0.18.5",
     "@eslint/js": "^9.36.0",
     "@storybook/addon-docs": "next",
@@ -107,6 +106,8 @@
     "zx": "^8.7.1"
   },
   "peerDependencies": {
+    "@angular/core": ">=18.0.0",
+    "@apollo/client": "^3.8.0 || ^4.0.0",
     "@vue/apollo-composable": "^4.0.0",
     "apollo-angular": ">=7.0.0",
     "graphql": "^16.0.0",
@@ -140,6 +141,9 @@
   },
   "packageManager": "pnpm@10.22.0+sha512.bf049efe995b28f527fd2b41ae0474ce29186f7edcb3bf545087bd61fbbebb2bf75362d1307fda09c2d288e1e499787ac12d4fcb617a974718a6051f2eee741c",
   "peerDependenciesMeta": {
+    "@angular/core": {
+      "optional": true
+    },
     "@vue/apollo-composable": {
       "optional": true
     },

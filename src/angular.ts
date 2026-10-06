@@ -1,35 +1,31 @@
-import { provideApollo } from 'apollo-angular';
-import { definePreviewAddon } from 'storybook/internal/csf';
+import { inject, NgZone } from '@angular/core';
+import { Apollo } from 'apollo-angular';
 import type { DecoratorFunction } from 'storybook/internal/types';
-import type { ApolloClientOptionsLike, ApolloClientParameters, ApolloClientTypes } from './types';
+import { defineApolloClientAddon } from './defineApolloClientAddon';
+import type { ApolloClientAddonOptions, ApolloClientParameters, CheckMocks } from './types';
 import { withApolloClientPanel } from './withApolloClientPanel';
 
-export type { ApolloClientOptionsLike, ApolloClientParameters, ApolloClientTypes, MockedResponseLike } from './types';
+export type {
+  ApolloClientAddonOptions,
+  ApolloClientInstance,
+  ApolloClientOptionsLike,
+  ApolloClientParameters,
+  ApolloClientTypes,
+  MockedResponseLike,
+} from './types';
 export { withApolloClientPanel };
-
-/** The options that `provideApollo` from `apollo-angular` uses to make the client. */
-export type ApolloAngularClientOptions = ReturnType<Parameters<typeof provideApollo>[0]>;
-
-export interface ApolloClientAddonOptions<TOptions extends ApolloClientOptionsLike> {
-  /**
-   * Makes the Apollo Client options for a story from its `apolloClient`
-   * parameter. `apollo-angular` makes a new client from them each time that
-   * the story starts, so each story gets a new cache and new mocks.
-   */
-  createOptions: (options: TOptions) => ApolloAngularClientOptions;
-}
 
 interface AngularStoryResult {
   applicationConfig?: { providers?: unknown[] };
 }
 
 /**
- * Makes a decorator that adds `provideApollo` to the application providers
- * of each story that has the `apolloClient` parameter. Other stories are not
- * changed.
+ * Makes a decorator that gives each story with an `apolloClient` parameter
+ * the client that `createClient` makes, through the `Apollo` service of
+ * `apollo-angular`. Stories without the parameter are not changed.
  */
-export function withApolloClient<TOptions extends ApolloClientOptionsLike>(
-  createOptions: (options: TOptions) => ApolloAngularClientOptions,
+export function withApolloClient<TOptions extends object>(
+  createClient: ApolloClientAddonOptions<TOptions>['createClient'],
 ): DecoratorFunction {
   return (storyFn, context) => {
     const { apolloClient } = context.parameters as ApolloClientParameters<TOptions>;
@@ -39,11 +35,22 @@ export function withApolloClient<TOptions extends ApolloClientOptionsLike>(
       return story;
     }
 
+    // Angular starts a new application for each story, so each story gets a
+    // new cache and new mocks.
+    const provideApolloClient = {
+      provide: Apollo,
+      useFactory: () => {
+        const apollo = new Apollo(inject(NgZone));
+        apollo.client = createClient(apolloClient) as Apollo['client'];
+        return apollo;
+      },
+    };
+
     return {
       ...story,
       applicationConfig: {
         ...story.applicationConfig,
-        providers: [...(story.applicationConfig?.providers ?? []), provideApollo(() => createOptions(apolloClient))],
+        providers: [...(story.applicationConfig?.providers ?? []), provideApolloClient],
       },
     };
   };
@@ -51,34 +58,22 @@ export function withApolloClient<TOptions extends ApolloClientOptionsLike>(
 
 /**
  * The Apollo Client addon for Angular with `apollo-angular`.
- * The type of the `apolloClient` parameter is the parameter type of
- * `createOptions`.
  *
  * @example
- * import { InMemoryCache } from '@apollo/client';
+ * import { ApolloClient, InMemoryCache } from '@apollo/client';
  * import { MockLink } from '@apollo/client/testing';
  *
  * definePreview({
  *   addons: [
  *     apolloClient({
- *       createOptions: ({ mocks = [] }: { mocks?: MockLink.MockedResponse[] }) => ({
- *         cache: new InMemoryCache(),
- *         link: new MockLink(mocks),
- *       }),
+ *       createClient: ({ mocks = [] }: { mocks?: ReadonlyArray<MockLink.MockedResponse> }) =>
+ *         new ApolloClient({ cache: new InMemoryCache(), link: new MockLink(mocks) }),
  *     }),
  *   ],
  * });
  */
-export default function apolloClient<TOptions extends ApolloClientOptionsLike>(
-  options: ApolloClientAddonOptions<TOptions>,
+export default function apolloClient<TOptions extends object>(
+  options: ApolloClientAddonOptions<TOptions> & CheckMocks<TOptions>,
 ) {
-  if (!options?.createOptions) {
-    throw new Error(
-      'storybook-addon-apollo-client/angular: give a createOptions function to the addon, for example apolloClient({ createOptions }).',
-    );
-  }
-
-  return definePreviewAddon<ApolloClientTypes<TOptions>>({
-    decorators: [withApolloClient(options.createOptions), withApolloClientPanel],
-  });
+  return defineApolloClientAddon('storybook-addon-apollo-client/angular', options, withApolloClient);
 }

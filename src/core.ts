@@ -14,7 +14,7 @@ export { withApolloClientPanel };
  * import type { MockLink } from '@apollo/client/testing';
  * definePreview({ addons: [apolloClient<{ mocks?: MockLink.MockedResponse[] }>()] });
  */
-export default function apolloClient<TOptions extends ApolloClientOptionsLike = ApolloClientOptionsLike>() {
+export default function apolloClient<TOptions extends object = ApolloClientOptionsLike>() {
   return definePreviewAddon<ApolloClientTypes<TOptions>>({
     decorators: [withApolloClientPanel],
   });

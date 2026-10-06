@@ -1,3 +1,4 @@
+import type { ApolloClient } from '@apollo/client/core';
 import type { DocumentNode } from 'graphql';
 
 export type ApolloClientAddonState = {
@@ -37,20 +38,42 @@ export interface MockedResponseLike {
   variableMatcher?: unknown;
 }
 
-/** The smallest set of options that the `apolloClient` parameter accepts. */
+/** The options that the panel reads from the `apolloClient` parameter. */
 export interface ApolloClientOptionsLike {
   mocks?: ReadonlyArray<MockedResponseLike>;
+}
+
+/**
+ * Gives a type error when the options have a `mocks` property that the panel
+ * cannot read. Options without `mocks` are accepted.
+ */
+export type CheckMocks<TOptions> = 'mocks' extends keyof TOptions
+  ? TOptions extends ApolloClientOptionsLike
+    ? unknown
+    : { 'The mocks option must be an array of mocked responses': never }
+  : unknown;
+
+/** An Apollo Client from your Apollo Client version (3 or 4). */
+export type ApolloClientInstance = InstanceType<typeof ApolloClient>;
+
+export interface ApolloClientAddonOptions<TOptions extends object = ApolloClientOptionsLike> {
+  /**
+   * Makes the Apollo Client for a story from its `apolloClient` parameter.
+   * The addon calls it each time that the story mounts, so each story gets a
+   * new cache and new mocks. The type of the `apolloClient` parameter is the
+   * type of the argument of this function.
+   */
+  createClient: (options: TOptions) => ApolloClientInstance;
 }
 
 export type ApolloClientParameters<TOptions = ApolloClientOptionsLike> = {
   /**
    * The mocked Apollo Client for this story. Put your mocks in `mocks`.
-   * The addon gives the story a client with these options, and shows the
-   * mocks in the Apollo Client panel.
+   * The addon gives the story the client that `createClient` makes from
+   * these options, and shows the mocks in the Apollo Client panel.
    *
-   * The type comes from the addon in `definePreview`: the props of your
-   * `MockedProvider` (React), the argument of `createClient` (Vue), or the
-   * argument of `createOptions` (Angular).
+   * The type is the type of the argument of `createClient` in
+   * `definePreview`.
    *
    * @see https://github.com/lifeiscontent/storybook-addon-apollo-client#writing-your-stories-with-queries
    */

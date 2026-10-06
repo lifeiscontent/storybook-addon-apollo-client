@@ -1,63 +1,80 @@
-import { createElement, type ComponentType } from 'react';
-import { definePreviewAddon } from 'storybook/internal/csf';
+import { ApolloProvider } from '@apollo/client/react';
+import { createElement, useMemo, type ComponentProps, type ComponentType } from 'react';
 import type { DecoratorFunction } from 'storybook/internal/types';
-import type { ApolloClientOptionsLike, ApolloClientParameters, ApolloClientTypes } from './types';
+import { defineApolloClientAddon } from './defineApolloClientAddon';
+import type { ApolloClientAddonOptions, ApolloClientParameters, CheckMocks } from './types';
 import { withApolloClientPanel } from './withApolloClientPanel';
 
-export type { ApolloClientOptionsLike, ApolloClientParameters, ApolloClientTypes, MockedResponseLike } from './types';
+export type {
+  ApolloClientAddonOptions,
+  ApolloClientInstance,
+  ApolloClientOptionsLike,
+  ApolloClientParameters,
+  ApolloClientTypes,
+  MockedResponseLike,
+} from './types';
 export { withApolloClientPanel };
 
-/** The `apolloClient` parameter for a `MockedProvider` with props `TProps`. */
-export type MockedProviderOptions<TProps> = Omit<TProps, 'children'>;
+type CreateClient<TOptions extends object> = ApolloClientAddonOptions<TOptions>['createClient'];
 
-export interface ApolloClientAddonOptions<TProps extends ApolloClientOptionsLike> {
-  /**
-   * The `MockedProvider` from your Apollo Client version:
-   * `@apollo/client/testing/react` for Apollo Client 4, or
-   * `@apollo/client/testing` for Apollo Client 3.
-   */
-  MockedProvider: ComponentType<TProps>;
+function ApolloClientStory<TOptions extends object>({
+  createClient,
+  options,
+  Story,
+}: {
+  createClient: CreateClient<TOptions>;
+  options: TOptions;
+  Story: ComponentType;
+}) {
+  // A new client for each mount, so each story gets a new cache and new mocks.
+  const client = useMemo(() => createClient(options), [createClient, options]);
+
+  // Apollo Client 4 types `children` as a required prop, so the props need a cast.
+  const props = { client } as ComponentProps<typeof ApolloProvider>;
+
+  return createElement(ApolloProvider, props, createElement(Story));
 }
 
 /**
- * Makes a decorator that puts the story in `MockedProvider` with the
- * `apolloClient` parameter as props. Stories without the parameter are not
- * changed.
+ * Makes a decorator that gives each story with an `apolloClient` parameter
+ * the client that `createClient` makes, through `ApolloProvider`. Stories
+ * without the parameter are not changed.
  */
-export function withMockedProvider<TProps extends ApolloClientOptionsLike>(
-  MockedProvider: ComponentType<TProps>,
-): DecoratorFunction {
-  return function mockedProviderDecorator(Story, context) {
-    const { apolloClient } = context.parameters as ApolloClientParameters<TProps>;
+export function withApolloClient<TOptions extends object>(createClient: CreateClient<TOptions>): DecoratorFunction {
+  return function apolloClientDecorator(Story, context) {
+    const { apolloClient } = context.parameters as ApolloClientParameters<TOptions>;
 
     if (!apolloClient) {
       return createElement(Story as ComponentType);
     }
 
-    return createElement(MockedProvider, apolloClient, createElement(Story as ComponentType));
+    return createElement(ApolloClientStory<TOptions>, {
+      key: context.id,
+      createClient,
+      options: apolloClient,
+      Story: Story as ComponentType,
+    });
   };
 }
 
 /**
- * The Apollo Client addon. Give it the `MockedProvider` from your Apollo
- * Client version. The addon puts each story that has an `apolloClient`
- * parameter in that provider, and the parameter gets the provider's props
- * type.
+ * The Apollo Client addon for React.
  *
  * @example
- * import { MockedProvider } from '@apollo/client/testing/react';
- * definePreview({ addons: [apolloClient({ MockedProvider })] });
+ * import { ApolloClient, InMemoryCache } from '@apollo/client';
+ * import { MockLink } from '@apollo/client/testing';
+ *
+ * definePreview({
+ *   addons: [
+ *     apolloClient({
+ *       createClient: ({ mocks = [] }: { mocks?: ReadonlyArray<MockLink.MockedResponse> }) =>
+ *         new ApolloClient({ cache: new InMemoryCache(), link: new MockLink(mocks) }),
+ *     }),
+ *   ],
+ * });
  */
-export default function apolloClient<TProps extends ApolloClientOptionsLike>(
-  options: ApolloClientAddonOptions<TProps>,
+export default function apolloClient<TOptions extends object>(
+  options: ApolloClientAddonOptions<TOptions> & CheckMocks<TOptions>,
 ) {
-  if (!options?.MockedProvider) {
-    throw new Error(
-      'storybook-addon-apollo-client: give your MockedProvider to the addon, for example apolloClient({ MockedProvider }). For renderers other than React, import the addon from "storybook-addon-apollo-client/core".',
-    );
-  }
-
-  return definePreviewAddon<ApolloClientTypes<MockedProviderOptions<TProps>>>({
-    decorators: [withMockedProvider(options.MockedProvider), withApolloClientPanel],
-  });
+  return defineApolloClientAddon('storybook-addon-apollo-client', options, withApolloClient);
 }

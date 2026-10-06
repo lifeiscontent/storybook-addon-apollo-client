@@ -2,18 +2,18 @@
  * Type tests for the `apolloClient` parameter. `pnpm typecheck` runs them.
  * Each `@ts-expect-error` line must stay an error. If a type gets too loose,
  * the directive is not used and the check fails.
+ *
+ * These tests use Apollo Client 4. With Apollo Client 3 the parameter types
+ * are the same, because the parameter type is the argument type of your own
+ * createClient function.
  */
-import { MockedProvider as MockedProviderV4 } from '@apollo/client/testing/react';
-import { MockedProvider as MockedProviderV3, type MockedResponse as MockedResponseV3 } from '@apollo/client-v3/testing';
-import { gql } from '@apollo/client';
-import { definePreview } from '@storybook/react-vite';
-import type { ComponentType } from 'react';
-import apolloClient from '../index';
-import apolloClientCore from '../core';
-import apolloClientVue from '../vue';
-import apolloClientAngular from '../angular';
-import { ApolloClient, InMemoryCache } from '@apollo/client';
+import { ApolloClient, gql, InMemoryCache } from '@apollo/client';
 import { MockLink } from '@apollo/client/testing';
+import { definePreview } from '@storybook/react-vite';
+import apolloClientAngular from '../angular';
+import apolloClientCore from '../core';
+import apolloClient from '../index';
+import apolloClientVue from '../vue';
 
 const QUERY = gql`
   query Viewer {
@@ -27,17 +27,21 @@ function Component() {
   return null;
 }
 
-declare const BadMockedProvider: ComponentType<{ mocks: string }>;
+interface MockOptions {
+  mocks?: ReadonlyArray<MockLink.MockedResponse>;
+}
 
-// Apollo Client 4
+const createClient = ({ mocks = [] }: MockOptions) =>
+  new ApolloClient({ cache: new InMemoryCache(), link: new MockLink(mocks) });
+
+// React
 {
-  const preview = definePreview({ addons: [apolloClient({ MockedProvider: MockedProviderV4 })] });
+  const preview = definePreview({ addons: [apolloClient({ createClient })] });
   const meta = preview.meta({
     component: Component,
     parameters: {
       apolloClient: {
         mocks: [{ request: { query: QUERY }, result: { data: { viewer: null } }, delay: 100 }],
-        showWarnings: false,
       },
     },
   });
@@ -69,55 +73,79 @@ declare const BadMockedProvider: ComponentType<{ mocks: string }>;
 
   meta.story({
     parameters: {
-      apolloClient: {
-        // @ts-expect-error `addTypename` was removed in Apollo Client 4.
-        addTypename: false,
-      },
-    },
-  });
-
-  meta.story({
-    parameters: {
-      // @ts-expect-error `children` comes from the story, not the parameter.
-      apolloClient: { children: null },
+      // @ts-expect-error The parameter only has the options that createClient takes.
+      apolloClient: { showWarnings: false },
     },
   });
 
   // Other parameters stay open.
   meta.story({ parameters: { layout: 'centered' } });
-
-  const mocks: MockLink.MockedResponse[] = [{ request: { query: QUERY }, result: { data: {} } }];
-  meta.story({ parameters: { apolloClient: { mocks } } });
 }
 
-// Apollo Client 3
+// Options without mocks, for example for a client with local resolvers
 {
-  const preview = definePreview({ addons: [apolloClient({ MockedProvider: MockedProviderV3 })] });
+  const preview = definePreview({
+    addons: [
+      apolloClient({
+        createClient: ({ viewerName }: { viewerName: string }) =>
+          new ApolloClient({
+            cache: new InMemoryCache(),
+            link: new MockLink([]),
+            dataMasking: false,
+            defaultOptions: { query: { context: { viewerName } } },
+          }),
+      }),
+    ],
+  });
   const meta = preview.meta({ component: Component });
 
-  const mocks: MockedResponseV3[] = [{ request: { query: QUERY }, result: { data: {} } }];
-  meta.story({ parameters: { apolloClient: { mocks, addTypename: false } } });
+  meta.story({ parameters: { apolloClient: { viewerName: 'Ada' } } });
 
   meta.story({
     parameters: {
-      // @ts-expect-error `localState` is an Apollo Client 4 option.
-      apolloClient: { localState: undefined },
+      // @ts-expect-error `viewerName` must be a string.
+      apolloClient: { viewerName: 1 },
     },
   });
 }
 
-// The addon needs a MockedProvider.
+// The addon needs a createClient function that returns a client.
 {
   // @ts-expect-error The options argument is required.
   apolloClient();
 
-  // @ts-expect-error The component must accept `mocks`.
-  apolloClient({ MockedProvider: BadMockedProvider });
+  // @ts-expect-error createClient must return a client, not client options.
+  apolloClient({ createClient: () => ({ cache: new InMemoryCache() }) });
+
+  // @ts-expect-error `mocks` must be compatible with the mocks that the panel reads.
+  apolloClient({ createClient: (options: { mocks: string }) => createClient({ mocks: [] }) ?? options });
+}
+
+// Vue and Angular take the same options.
+{
+  for (const addon of [apolloClientVue({ createClient }), apolloClientAngular({ createClient })]) {
+    const meta = definePreview({ addons: [addon] }).meta({ component: Component });
+
+    meta.story({ parameters: { apolloClient: { mocks: [{ request: { query: QUERY }, result: { data: {} } }] } } });
+
+    meta.story({
+      parameters: {
+        // @ts-expect-error `mocks` must be an array of mocked responses.
+        apolloClient: { mocks: 'not an array' },
+      },
+    });
+  }
+
+  // @ts-expect-error The options argument is required.
+  apolloClientVue();
+
+  // @ts-expect-error The options argument is required.
+  apolloClientAngular();
 }
 
 // Core addon for other renderers
 {
-  const preview = definePreview({ addons: [apolloClientCore<{ mocks?: MockLink.MockedResponse[] }>()] });
+  const preview = definePreview({ addons: [apolloClientCore<MockOptions>()] });
   const meta = preview.meta({ component: Component });
 
   meta.story({ parameters: { apolloClient: { mocks: [{ request: { query: QUERY } }] } } });
@@ -133,56 +161,4 @@ declare const BadMockedProvider: ComponentType<{ mocks: string }>;
   untyped.meta({ component: Component }).story({
     parameters: { apolloClient: { mocks: [{ request: { query: QUERY } }] } },
   });
-}
-
-// Vue: the parameter type comes from the createClient parameter.
-{
-  const preview = definePreview({
-    addons: [
-      apolloClientVue({
-        createClient: ({ mocks = [] }: { mocks?: ReadonlyArray<MockLink.MockedResponse> }) =>
-          new ApolloClient({ cache: new InMemoryCache(), link: new MockLink(mocks) }),
-      }),
-    ],
-  });
-  const meta = preview.meta({ component: Component });
-
-  meta.story({ parameters: { apolloClient: { mocks: [{ request: { query: QUERY }, result: { data: {} } }] } } });
-
-  meta.story({
-    parameters: {
-      // @ts-expect-error `mocks` must be an array of mocked responses.
-      apolloClient: { mocks: 'not an array' },
-    },
-  });
-
-  // @ts-expect-error The options argument is required.
-  apolloClientVue();
-}
-
-// Angular: the parameter type comes from the createOptions parameter.
-{
-  const preview = definePreview({
-    addons: [
-      apolloClientAngular({
-        createOptions: ({ mocks = [] }: { mocks?: ReadonlyArray<MockLink.MockedResponse> }) => ({
-          cache: new InMemoryCache(),
-          link: new MockLink(mocks),
-        }),
-      }),
-    ],
-  });
-  const meta = preview.meta({ component: Component });
-
-  meta.story({ parameters: { apolloClient: { mocks: [{ request: { query: QUERY }, result: { data: {} } }] } } });
-
-  meta.story({
-    parameters: {
-      // @ts-expect-error The Angular addon only knows the options that you give it.
-      apolloClient: { showWarnings: false },
-    },
-  });
-
-  // @ts-expect-error createOptions must return client options, not a client.
-  apolloClientAngular({ createOptions: () => 'not options' });
 }

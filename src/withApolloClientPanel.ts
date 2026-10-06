@@ -13,7 +13,8 @@ const NO_MOCKS: ReadonlyArray<MockedResponseLike> = [];
  */
 export const withApolloClientPanel: DecoratorFunction = (storyFn, context) => {
   const { apolloClient } = context.parameters as ApolloClientParameters;
-  const mocks = apolloClient?.mocks ?? NO_MOCKS;
+  // Options for a client without mocks, for example with local resolvers, have no `mocks`.
+  const mocks = Array.isArray(apolloClient?.mocks) ? apolloClient.mocks : NO_MOCKS;
 
   const emit = useChannel(
     {
