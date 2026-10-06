@@ -30,6 +30,9 @@ jobs:
       - name: Check for linter errors
         run: pnpm lint
 
+      - name: Check formatting
+        run: pnpm format:check
+
   build:
     runs-on: ubuntu-latest
     if: "!contains(github.event.head_commit.message, 'ci skip') && !contains(github.event.head_commit.message, 'skip ci')"
