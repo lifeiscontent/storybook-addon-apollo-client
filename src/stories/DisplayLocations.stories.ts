@@ -1,18 +1,23 @@
-import type { Meta, StoryObj } from '@storybook/react-vite';
+import { expect } from 'storybook/test';
+import preview from '../../.storybook/preview';
 
 import { DisplayLocations, GET_LOCATIONS_QUERY } from './DisplayLocations';
-import { ApolloError } from '@apollo/client';
 
-const meta: Meta<typeof DisplayLocations> = {
+const locations = Array.from({ length: 3 }).map((_, index) => ({
+  id: index + 1,
+  name: `Location ${index + 1}`,
+  description: 'This is a location',
+  photo: 'https://placehold.co/400x250',
+  __typename: 'Location',
+}));
+
+const meta = preview.meta({
   title: 'Example/DisplayLocations',
   component: DisplayLocations,
   tags: ['autodocs'],
-};
+});
 
-export default meta;
-type Story = StoryObj<typeof DisplayLocations>;
-
-export const WithResponse: Story = {
+export const WithResponse = meta.story({
   parameters: {
     apolloClient: {
       mocks: [
@@ -21,23 +26,18 @@ export const WithResponse: Story = {
             query: GET_LOCATIONS_QUERY,
           },
           result: {
-            data: {
-              locations: Array.from({ length: 3 }).map((_, index) => ({
-                id: index + 1,
-                name: `Location ${index + 1}`,
-                description: 'This is a location',
-                photo: 'https://placehold.co/400x250',
-                __typename: 'Location',
-              })),
-            },
+            data: { locations },
           },
         },
       ],
     },
   },
-};
+  play: async ({ canvas }) => {
+    await expect(await canvas.findAllByRole('heading')).toHaveLength(locations.length);
+  },
+});
 
-export const WithDelayedResponse: Story = {
+export const WithDelayedResponse = meta.story({
   parameters: {
     apolloClient: {
       mocks: [
@@ -47,23 +47,15 @@ export const WithDelayedResponse: Story = {
             query: GET_LOCATIONS_QUERY,
           },
           result: {
-            data: {
-              locations: Array.from({ length: 3 }).map((_, index) => ({
-                id: index + 1,
-                name: `Location ${index + 1}`,
-                description: 'This is a location',
-                photo: 'https://placehold.co/400x250',
-                __typename: 'Location',
-              })),
-            },
+            data: { locations },
           },
         },
       ],
     },
   },
-};
+});
 
-export const WithError: Story = {
+export const WithError = meta.story({
   parameters: {
     apolloClient: {
       mocks: [
@@ -71,9 +63,12 @@ export const WithError: Story = {
           request: {
             query: GET_LOCATIONS_QUERY,
           },
-          error: new ApolloError({ errorMessage: 'Could not get locations' }),
+          error: new Error('Could not get locations'),
         },
       ],
     },
   },
-};
+  play: async ({ canvas }) => {
+    await expect(await canvas.findByText('Error : Could not get locations')).toBeInTheDocument();
+  },
+});

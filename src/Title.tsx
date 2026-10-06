@@ -1,10 +1,9 @@
 import { useParameter } from 'storybook/manager-api';
 import { PARAM_KEY } from './constants';
+import type { ApolloClientOptionsLike } from './types';
 
 export function Title() {
-  const { mocks } = useParameter(PARAM_KEY, {
-    mocks: [],
-  });
+  const count = useParameter<ApolloClientOptionsLike>(PARAM_KEY)?.mocks?.length ?? 0;
 
-  return mocks.length ? `Apollo Client (${mocks.length})` : 'Apollo Client';
+  return count ? `Apollo Client (${count})` : 'Apollo Client';
 }
