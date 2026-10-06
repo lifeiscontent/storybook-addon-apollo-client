@@ -61,7 +61,11 @@ export default defineConfig(async () => {
       entry: previewEntries,
       platform: 'browser',
       target: 'esnext', // we can use esnext for preview entries since the builders will bundle the addon's preview entries again anyway
-      dts: true,
+      dts: {
+        // tsup sets the deprecated `baseUrl` option in its declaration build,
+        // which TypeScript 6 rejects. Remove this when tsup stops setting it.
+        compilerOptions: { ignoreDeprecations: '6.0' },
+      },
     });
   }
 
