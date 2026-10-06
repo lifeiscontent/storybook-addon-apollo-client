@@ -1,3 +1,15 @@
+# v11.0.0 (Tue Oct 06 2026)
+
+#### 💥 Breaking Change
+
+- Support Storybook 10.1+ and 11 with a typed apolloClient parameter [#150](https://github.com/lifeiscontent/storybook-addon-apollo-client/pull/150) ([@lifeiscontent](https://github.com/lifeiscontent))
+
+#### Authors: 1
+
+- Aaron Reisman ([@lifeiscontent](https://github.com/lifeiscontent))
+
+---
+
 # v10.0.0 (Mon Nov 24 2025)
 
 #### 💥 Breaking Change
