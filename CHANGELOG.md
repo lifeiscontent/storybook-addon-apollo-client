@@ -1,3 +1,15 @@
+# v11.0.1 (Tue Oct 06 2026)
+
+#### 🐛 Bug Fix
+
+- Fix npm install failure from optional peer dependencies [#153](https://github.com/lifeiscontent/storybook-addon-apollo-client/pull/153) ([@lifeiscontent](https://github.com/lifeiscontent))
+
+#### Authors: 1
+
+- Aaron Reisman ([@lifeiscontent](https://github.com/lifeiscontent))
+
+---
+
 # v11.0.0 (Tue Oct 06 2026)
 
 #### 💥 Breaking Change
