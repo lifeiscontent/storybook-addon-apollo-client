@@ -26,6 +26,14 @@
       "types": "./dist/core.d.ts",
       "default": "./dist/core.js"
     },
+    "./vue": {
+      "types": "./dist/vue.d.ts",
+      "default": "./dist/vue.js"
+    },
+    "./angular": {
+      "types": "./dist/angular.d.ts",
+      "default": "./dist/angular.js"
+    },
     "./preview": {
       "types": "./dist/preview.d.ts",
       "default": "./dist/preview.js"
@@ -56,6 +64,7 @@
     "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
+    "@angular/core": "^22.2.1",
     "@apollo/client": "4.3.2",
     "@apollo/client-v3": "npm:@apollo/client@3.14.0",
     "@eslint/js": "^9.36.0",
@@ -68,6 +77,8 @@
     "@types/react-dom": "^18.2.21",
     "@vitejs/plugin-react": "^4.7.0",
     "@vitest/browser-playwright": "^4.1.11",
+    "@vue/apollo-composable": "^4.2.2",
+    "apollo-angular": "^14.2.0",
     "auto": "^11.3.0",
     "boxen": "^8.0.1",
     "eslint": "^9.36.0",
@@ -90,12 +101,16 @@
     "typescript-eslint": "^8.44.1",
     "vite": "^7.0.5",
     "vitest": "^4.1.11",
+    "vue": "^3.5.43",
     "zx": "^8.7.1"
   },
   "peerDependencies": {
+    "@vue/apollo-composable": "^4.0.0",
+    "apollo-angular": ">=7.0.0",
     "graphql": "^16.0.0",
     "react": "^18.0.0 || ^19.0.0",
-    "storybook": "^11.0.0"
+    "storybook": "^11.0.0",
+    "vue": "^3.0.0"
   },
   "publishConfig": {
     "access": "public"
@@ -107,20 +122,33 @@
     "previewEntries": [
       "src/preview.ts",
       "src/index.ts",
-      "src/core.ts"
+      "src/core.ts",
+      "src/vue.ts",
+      "src/angular.ts"
     ],
     "nodeEntries": []
   },
   "storybook": {
     "displayName": "Apollo Client",
     "supportedFrameworks": [
-      "react"
+      "react",
+      "vue3",
+      "angular"
     ],
     "icon": "https://raw.githubusercontent.com/apollographql/apollo-client-devtools/main/assets/apollo-wordmark.svg"
   },
   "packageManager": "pnpm@10.22.0+sha512.bf049efe995b28f527fd2b41ae0474ce29186f7edcb3bf545087bd61fbbebb2bf75362d1307fda09c2d288e1e499787ac12d4fcb617a974718a6051f2eee741c",
   "peerDependenciesMeta": {
+    "@vue/apollo-composable": {
+      "optional": true
+    },
+    "apollo-angular": {
+      "optional": true
+    },
     "react": {
+      "optional": true
+    },
+    "vue": {
       "optional": true
     }
   }

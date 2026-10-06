@@ -72,9 +72,53 @@ export default definePreview({
 });
 ```
 
+### Vue 3
+
+Use the `/vue` entry with `@vue/apollo-composable`. Give it a `createClient` function. The addon calls it each time that a story mounts, and the `apolloClient` parameter gets the type of its argument.
+
+```ts
+import { definePreview } from '@storybook/vue3-vite';
+import { ApolloClient, InMemoryCache } from '@apollo/client/core';
+import { MockLink, type MockedResponse } from '@apollo/client/testing/core';
+import apolloClient from 'storybook-addon-apollo-client/vue';
+
+export default definePreview({
+  addons: [
+    apolloClient({
+      createClient: ({ mocks = [] }: { mocks?: ReadonlyArray<MockedResponse> }) =>
+        new ApolloClient({ cache: new InMemoryCache(), link: new MockLink(mocks) }),
+    }),
+  ],
+});
+```
+
+`@vue/apollo-composable` supports Apollo Client 3, so this example uses Apollo Client 3. Import from `@apollo/client/core` and `@apollo/client/testing/core`, because the `@apollo/client` and `@apollo/client/testing` entries of Apollo Client 3 import React. With Apollo Client 4, use `MockLink.MockedResponse` from `@apollo/client/testing`, because `MockedResponse` is deprecated there.
+
+### Angular
+
+Use the `/angular` entry with `apollo-angular`. Give it a `createOptions` function that returns the options for `provideApollo`. The addon adds `provideApollo` to the application providers of each story, and the `apolloClient` parameter gets the type of the argument of `createOptions`.
+
+```ts
+import { definePreview } from '@storybook/angular';
+import { InMemoryCache } from '@apollo/client';
+import { MockLink } from '@apollo/client/testing';
+import apolloClient from 'storybook-addon-apollo-client/angular';
+
+export default definePreview({
+  addons: [
+    apolloClient({
+      createOptions: ({ mocks = [] }: { mocks?: ReadonlyArray<MockLink.MockedResponse> }) => ({
+        cache: new InMemoryCache(),
+        link: new MockLink(mocks),
+      }),
+    }),
+  ],
+});
+```
+
 ### Other renderers
 
-For other renderers, for example Vue or Svelte, use the `/core` entry. It connects the panel and types the `apolloClient` parameter, but you supply the Apollo Client in your own decorator. Give the type of the parameter as a type argument.
+For other renderers, for example Svelte, use the `/core` entry. It connects the panel and types the `apolloClient` parameter, but you supply the Apollo Client in your own decorator. Give the type of the parameter as a type argument.
 
 ```ts
 import type { MockLink } from '@apollo/client/testing';
@@ -174,7 +218,7 @@ export const Failure = meta.story({
 
 ## Without `definePreview`
 
-If your `preview.ts` does not use `definePreview`, Storybook loads the panel decorator from `main.ts` automatically. Add the provider decorator yourself. For React, use `withMockedProvider`. The `apolloClient` parameter is not typed in this setup.
+If your `preview.ts` does not use `definePreview`, Storybook loads the panel decorator from `main.ts` automatically. Add the provider decorator yourself. Each entry exports one: `withMockedProvider` from the main entry, and `withApolloClient` from `/vue` and `/angular`. The `apolloClient` parameter is not typed in this setup.
 
 ```ts
 import type { Preview } from '@storybook/react-vite';
@@ -192,7 +236,7 @@ export default preview;
 
 1. Update to Storybook 11.
 2. Remove the Apollo Client decorator and its helper functions from `.storybook/preview.ts`. The addon supplies them now.
-3. Add the addon to `addons` in `definePreview`, as shown in [Setup](#setup).
+3. Add the addon to `addons` in `definePreview`, as shown in [Setup](#setup) for your framework.
 4. Fix the type errors that this shows in your `apolloClient` parameters.
 
 ## Example App

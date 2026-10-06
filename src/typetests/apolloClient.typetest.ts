@@ -10,6 +10,9 @@ import { definePreview } from '@storybook/react-vite';
 import type { ComponentType } from 'react';
 import apolloClient from '../index';
 import apolloClientCore from '../core';
+import apolloClientVue from '../vue';
+import apolloClientAngular from '../angular';
+import { ApolloClient, InMemoryCache } from '@apollo/client';
 import { MockLink } from '@apollo/client/testing';
 
 const QUERY = gql`
@@ -130,4 +133,56 @@ declare const BadMockedProvider: ComponentType<{ mocks: string }>;
   untyped.meta({ component: Component }).story({
     parameters: { apolloClient: { mocks: [{ request: { query: QUERY } }] } },
   });
+}
+
+// Vue: the parameter type comes from the createClient parameter.
+{
+  const preview = definePreview({
+    addons: [
+      apolloClientVue({
+        createClient: ({ mocks = [] }: { mocks?: ReadonlyArray<MockLink.MockedResponse> }) =>
+          new ApolloClient({ cache: new InMemoryCache(), link: new MockLink(mocks) }),
+      }),
+    ],
+  });
+  const meta = preview.meta({ component: Component });
+
+  meta.story({ parameters: { apolloClient: { mocks: [{ request: { query: QUERY }, result: { data: {} } }] } } });
+
+  meta.story({
+    parameters: {
+      // @ts-expect-error `mocks` must be an array of mocked responses.
+      apolloClient: { mocks: 'not an array' },
+    },
+  });
+
+  // @ts-expect-error The options argument is required.
+  apolloClientVue();
+}
+
+// Angular: the parameter type comes from the createOptions parameter.
+{
+  const preview = definePreview({
+    addons: [
+      apolloClientAngular({
+        createOptions: ({ mocks = [] }: { mocks?: ReadonlyArray<MockLink.MockedResponse> }) => ({
+          cache: new InMemoryCache(),
+          link: new MockLink(mocks),
+        }),
+      }),
+    ],
+  });
+  const meta = preview.meta({ component: Component });
+
+  meta.story({ parameters: { apolloClient: { mocks: [{ request: { query: QUERY }, result: { data: {} } }] } } });
+
+  meta.story({
+    parameters: {
+      // @ts-expect-error The Angular addon only knows the options that you give it.
+      apolloClient: { showWarnings: false },
+    },
+  });
+
+  // @ts-expect-error createOptions must return client options, not a client.
+  apolloClientAngular({ createOptions: () => 'not options' });
 }
