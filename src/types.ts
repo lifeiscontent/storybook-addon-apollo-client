@@ -8,6 +8,8 @@ export type ApolloClientAddonState = {
   context?: string;
   result?: string;
   error?: string;
+  /** The `delay` and `maxUsageCount` of the mock. */
+  mockOptions?: string;
   activeIndex: number;
 };
 
@@ -22,11 +24,17 @@ export interface MockedResponseLike {
     query: DocumentNode;
     variables?: unknown;
     operationName?: string;
+    /** Apollo Client 3 only. */
     extensions?: unknown;
+    /** Apollo Client 3 only. */
     context?: unknown;
   };
   result?: unknown;
   error?: unknown;
+  delay?: unknown;
+  maxUsageCount?: number;
+  /** Apollo Client 3 only. Apollo Client 4 accepts a function in `request.variables`. */
+  variableMatcher?: unknown;
 }
 
 /** The smallest set of options that the `apolloClient` parameter accepts. */

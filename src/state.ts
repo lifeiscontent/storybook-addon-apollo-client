@@ -48,6 +48,11 @@ function replacer(_key: string, value: unknown) {
     return serializeError(value);
   }
 
+  // JSON has no Infinity or NaN. Apollo Client uses Infinity for maxUsageCount.
+  if (typeof value === 'number' && !Number.isFinite(value)) {
+    return String(value);
+  }
+
   return value;
 }
 
@@ -68,6 +73,14 @@ export function formatValue(value: unknown): string | undefined {
   }
 }
 
+function formatMockOptions({ delay, maxUsageCount }: MockedResponseLike) {
+  if (delay === undefined && maxUsageCount === undefined) {
+    return undefined;
+  }
+
+  return formatValue({ delay, maxUsageCount });
+}
+
 /** Makes the panel state for the mock at `activeIndex`. */
 export function getApolloClientAddonState(
   mocks: ReadonlyArray<MockedResponseLike>,
@@ -84,10 +97,11 @@ export function getApolloClientAddonState(
     options,
     activeIndex,
     query: print(mock.request.query),
-    variables: formatValue(mock.request.variables),
+    variables: formatValue(mock.request.variables ?? mock.variableMatcher),
     extensions: formatValue(mock.request.extensions),
     context: formatValue(mock.request.context),
     result: formatValue(mock.result),
     error: formatValue(mock.error),
+    mockOptions: formatMockOptions(mock),
   };
 }

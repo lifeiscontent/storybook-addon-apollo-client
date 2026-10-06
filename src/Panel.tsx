@@ -46,6 +46,7 @@ export const Panel: React.FC<Partial<Addon_RenderOptions>> = ({ active = false }
             extensions={state.extensions}
             result={state.result}
             error={state.error}
+            mockOptions={state.mockOptions}
           />
         </>
       ) : (

@@ -104,7 +104,37 @@ describe('getApolloClientAddonState', () => {
       context: undefined,
       result: undefined,
       error: formatValue(new Error('Failed')),
+      mockOptions: undefined,
     });
+  });
+
+  it('shows delay and maxUsageCount in the mock options', () => {
+    const state = getApolloClientAddonState(
+      [{ request: { query: GET_VIEWER }, delay: 500, maxUsageCount: Number.POSITIVE_INFINITY }],
+      0,
+    );
+
+    expect(JSON.parse(state.mockOptions!)).toEqual({ delay: 500, maxUsageCount: 'Infinity' });
+  });
+
+  it('shows a delay function by name (Apollo Client 4)', () => {
+    function realisticDelay() {
+      return 100;
+    }
+
+    const state = getApolloClientAddonState([{ request: { query: GET_VIEWER }, delay: realisticDelay }], 0);
+
+    expect(JSON.parse(state.mockOptions!)).toEqual({ delay: '[Function realisticDelay]' });
+  });
+
+  it('shows the variableMatcher of an Apollo Client 3 mock as the variables', () => {
+    function matchAll() {
+      return true;
+    }
+
+    const state = getApolloClientAddonState([{ request: { query: GET_VIEWER }, variableMatcher: matchAll }], 0);
+
+    expect(state.variables).toBe('"[Function matchAll]"');
   });
 
   it('selects nothing when the index is out of range', () => {
