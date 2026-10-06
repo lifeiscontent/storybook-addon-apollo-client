@@ -18,5 +18,5 @@
     "lib": ["esnext", "dom", "dom.iterable"],
     "rootDir": "."
   },
-  "include": ["src/**/*", ".storybook/**/*", "tsup.config.ts"]
+  "include": ["src/**/*", ".storybook/**/*", "tsdown.config.ts"]
 }
