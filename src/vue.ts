@@ -5,9 +5,7 @@ import { defineComponent, h, provide, type Component } from 'vue';
 import type { ApolloClientOptionsLike, ApolloClientParameters, ApolloClientTypes } from './types';
 import { withApolloClientPanel } from './withApolloClientPanel';
 
-export * from './constants';
-export * from './state';
-export * from './types';
+export type { ApolloClientOptionsLike, ApolloClientParameters, ApolloClientTypes, MockedResponseLike } from './types';
 export { withApolloClientPanel };
 
 export interface ApolloClientAddonOptions<TOptions extends ApolloClientOptionsLike> {

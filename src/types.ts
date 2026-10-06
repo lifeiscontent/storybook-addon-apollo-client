@@ -42,11 +42,18 @@ export interface ApolloClientOptionsLike {
   mocks?: ReadonlyArray<MockedResponseLike>;
 }
 
-/**
- * The `apolloClient` parameter. `TOptions` is the props of the
- * `MockedProvider` that you give to the addon, without `children`.
- */
 export type ApolloClientParameters<TOptions = ApolloClientOptionsLike> = {
+  /**
+   * The mocked Apollo Client for this story. Put your mocks in `mocks`.
+   * The addon gives the story a client with these options, and shows the
+   * mocks in the Apollo Client panel.
+   *
+   * The type comes from the addon in `definePreview`: the props of your
+   * `MockedProvider` (React), the argument of `createClient` (Vue), or the
+   * argument of `createOptions` (Angular).
+   *
+   * @see https://github.com/lifeiscontent/storybook-addon-apollo-client#writing-your-stories-with-queries
+   */
   apolloClient?: TOptions;
 };
 

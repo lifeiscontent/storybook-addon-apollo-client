@@ -2,9 +2,7 @@ import { definePreviewAddon } from 'storybook/internal/csf';
 import type { ApolloClientOptionsLike, ApolloClientTypes } from './types';
 import { withApolloClientPanel } from './withApolloClientPanel';
 
-export * from './constants';
-export * from './state';
-export * from './types';
+export type { ApolloClientOptionsLike, ApolloClientParameters, ApolloClientTypes, MockedResponseLike } from './types';
 export { withApolloClientPanel };
 
 /**

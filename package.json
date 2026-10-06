@@ -12,7 +12,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/lifeiscontent/storybook-addon-apollo-client"
+    "url": "git+https://github.com/lifeiscontent/storybook-addon-apollo-client.git"
   },
   "type": "module",
   "license": "MIT",
@@ -44,29 +44,30 @@
   "files": [
     "dist/**/*",
     "README.md",
-    "*.js",
-    "*.d.ts"
+    "manager.js",
+    "preview.js"
   ],
   "scripts": {
+    "prebuild": "node -e \"fs.rmSync('./dist', { recursive: true, force: true })\"",
     "build": "tsup",
     "build-storybook": "storybook build",
     "build:watch": "npm run build -- --watch",
-    "eject-ts": "zx scripts/eject-typescript.js",
     "format": "prettier --write .",
     "lint": "eslint --cache .",
     "lint:fix": "pnpm lint --fix",
-    "prebuild": "node -e \"fs.rmSync('./dist', { recursive: true, force: true })\"",
     "prerelease": "zx scripts/prepublish-checks.js",
     "release": "npm run build && auto shipit",
     "start": "run-p build:watch \"storybook --quiet\"",
     "storybook": "storybook dev -p 6006",
     "test": "vitest run",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "lint:package": "publint --strict && attw --pack . --profile esm-only --exclude-entrypoints manager"
   },
   "devDependencies": {
     "@angular/core": "^22.2.1",
     "@apollo/client": "4.3.2",
     "@apollo/client-v3": "npm:@apollo/client@3.14.0",
+    "@arethetypeswrong/cli": "^0.18.5",
     "@eslint/js": "^9.36.0",
     "@storybook/addon-docs": "next",
     "@storybook/addon-vitest": "next",
@@ -91,6 +92,7 @@
     "playwright": "^1.63.0",
     "prettier": "^3.6.2",
     "prompts": "^2.4.2",
+    "publint": "^0.3.25",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "rxjs": "^7.8.2",

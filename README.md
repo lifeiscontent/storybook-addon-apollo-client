@@ -168,7 +168,7 @@ Read more about the options available for MockedProvider at https://www.apollogr
 
 In Storybook, open the addon panel and select the "Apollo Client" tab. Select a mock to see its query, variables, result, error, extensions, and context.
 
-![Addon UI Preview](preview.png)
+![Addon UI Preview](https://raw.githubusercontent.com/lifeiscontent/storybook-addon-apollo-client/main/preview.png)
 
 ## Loading State
 
