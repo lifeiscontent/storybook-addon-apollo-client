@@ -55,7 +55,7 @@ Register the addon in `.storybook/preview.ts` and give it a `createClient` funct
 - sends the mocks of the current story to the Apollo Client panel
 - types the `apolloClient` parameter with the type of the argument of `createClient`
 
-The setup is the same for each framework. Only the import of the addon changes.
+The setup is the same for each framework. Only the import of the addon changes. For Vue and Angular, also install `@vue/apollo-composable` or `apollo-angular`.
 
 | Framework | Import the addon from                   | The addon gives the client to the story with |
 | --------- | --------------------------------------- | -------------------------------------------- |
