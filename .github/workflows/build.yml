@@ -66,6 +66,14 @@ jobs:
       - name: Check release requirements
         run: pnpm prerelease
 
+      - name: Check that npm can install the package
+        run: |
+          pnpm pack --pack-destination "$RUNNER_TEMP"
+          mkdir "$RUNNER_TEMP/npm-install-check"
+          cd "$RUNNER_TEMP/npm-install-check"
+          npm init -y
+          npm install --save-dev storybook@10 @storybook/react-vite@10 react react-dom @apollo/client graphql rxjs "$RUNNER_TEMP"/storybook-addon-apollo-client-*.tgz
+
       - name: Build Storybook
         run: pnpm build-storybook
 

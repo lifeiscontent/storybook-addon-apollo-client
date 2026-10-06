@@ -103,13 +103,9 @@
     "zx": "^8.8.5"
   },
   "peerDependencies": {
-    "@angular/core": ">=18.0.0",
     "@apollo/client": "^3.8.0 || ^4.0.0",
-    "@vue/apollo-composable": "^4.0.0",
-    "apollo-angular": ">=7.0.0",
     "graphql": "^16.0.0 || ^17.0.0",
-    "storybook": "^10.1.0 || ^11.0.0-0",
-    "vue": "^3.0.0"
+    "storybook": "^10.1.0 || ^11.0.0-0"
   },
   "publishConfig": {
     "access": "public"
@@ -136,19 +132,5 @@
     ],
     "icon": "https://raw.githubusercontent.com/apollographql/apollo-client-devtools/main/assets/apollo-wordmark.svg"
   },
-  "packageManager": "pnpm@10.22.0+sha512.bf049efe995b28f527fd2b41ae0474ce29186f7edcb3bf545087bd61fbbebb2bf75362d1307fda09c2d288e1e499787ac12d4fcb617a974718a6051f2eee741c",
-  "peerDependenciesMeta": {
-    "@angular/core": {
-      "optional": true
-    },
-    "@vue/apollo-composable": {
-      "optional": true
-    },
-    "apollo-angular": {
-      "optional": true
-    },
-    "vue": {
-      "optional": true
-    }
-  }
+  "packageManager": "pnpm@10.22.0+sha512.bf049efe995b28f527fd2b41ae0474ce29186f7edcb3bf545087bd61fbbebb2bf75362d1307fda09c2d288e1e499787ac12d4fcb617a974718a6051f2eee741c"
 }

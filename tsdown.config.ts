@@ -13,9 +13,24 @@ const commonConfig: UserConfig = {
   format: 'esm',
   // Use .js and .d.ts, because package.json has "type": "module".
   fixedExtension: false,
-  // Storybook supplies these packages, so they are never bundled and are not
-  // dependencies. Peer dependencies are external automatically.
-  deps: { neverBundle: ['react', 'react-dom', '@storybook/icons'] },
+  deps: {
+    neverBundle: [
+      // Storybook supplies these packages, so they are not dependencies.
+      'react',
+      'react-dom',
+      '@storybook/icons',
+      // Users of the /vue and /angular entries install these packages. They
+      // are not peer dependencies, because npm fails on the peer ranges of
+      // optional peers that are not installed.
+      /^vue$/,
+      /^@vue\/apollo-composable$/,
+      /^apollo-angular$/,
+      /^@angular\/core$/,
+    ],
+    // Peer dependencies are external automatically.
+    // Fail the build if a dependency gets bundled into the output.
+    onlyBundle: [],
+  },
 };
 
 const configs: UserConfig[] = [];
