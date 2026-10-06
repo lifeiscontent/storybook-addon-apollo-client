@@ -60,6 +60,9 @@ jobs:
       - name: Check package
         run: pnpm lint:package
 
+      - name: Check release requirements
+        run: pnpm prerelease
+
       - name: Build Storybook
         run: pnpm build-storybook
 
